@@ -263,7 +263,7 @@ func namesMatch(match *Match, target *Matchable) (bool, error) {
 		return true, nil
 	}
 
-	return match.Name.Matches(target.Object.GetName()), nil
+	return match.Name.Matches(target.Object.GetName()) || match.Name.MatchesGenerateName(target.Object.GetGenerateName()), nil
 }
 
 func scopeMatch(match *Match, target *Matchable) (bool, error) {
