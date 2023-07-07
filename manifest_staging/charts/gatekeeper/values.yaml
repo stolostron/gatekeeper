@@ -164,6 +164,7 @@ controllerManager:
   disableCertRotation: false
   tlsMinVersion: 1.2
   clientCertName: ""
+  strategyType: RollingUpdate
   affinity:
     podAntiAffinity:
       preferredDuringSchedulingIgnoredDuringExecution:
