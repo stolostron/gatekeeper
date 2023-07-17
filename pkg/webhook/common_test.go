@@ -33,7 +33,7 @@ func (w chanWriter) Write(p []byte) (n int, err error) {
 
 func TestCongifureWebhookServer(t *testing.T) {
 	expectedServer := &webhook.Server{
-		TLSMinVersion: "1.3",
+		TLSMinVersion: "1.2",
 	}
 
 	if *clientCAName != "" {
