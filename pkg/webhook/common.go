@@ -59,7 +59,7 @@ var (
 	disableEnforcementActionValidation = flag.Bool("disable-enforcementaction-validation", false, "disable validation of the enforcementAction field of a constraint")
 	logDenies                          = flag.Bool("log-denies", false, "log detailed info on each deny")
 	emitAdmissionEvents                = flag.Bool("emit-admission-events", false, "(alpha) emit Kubernetes events in gatekeeper namespace for each admission violation")
-	tlsMinVersion                      = flag.String("tls-min-version", "1.3", "minimum version of TLS supported")
+	tlsMinVersion                      = flag.String("tls-min-version", "1.2", "minimum version of TLS supported")
 	serviceaccount                     = fmt.Sprintf("system:serviceaccount:%s:%s", util.GetNamespace(), serviceAccountName)
 	clientCAName                       = flag.String("client-ca-name", "", "name of the certificate authority bundle to authenticate the Kubernetes API server requests against")
 	certCNName                         = flag.String("client-cn-name", "kube-apiserver", "expected CN name on the client certificate attached by apiserver in requests to the webhook")
