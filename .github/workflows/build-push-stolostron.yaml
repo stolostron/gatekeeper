@@ -1,0 +1,28 @@
+name: build and push to quay
+
+on:
+  push:  
+    tags:
+      - 'v*' # tags matching v*, i.e. v0.0.1, v1.0.0-rc.0
+
+jobs:
+  build:
+    name: Image build and push
+    runs-on: ubuntu-latest  
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - uses: docker/login-action@v2
+      with:
+        registry: quay.io
+        username: ${{ secrets.QUAY_USER }}
+        password: ${{ secrets.QUAY_PASSWORD }}
+
+    - name: build and push
+      run: |
+        REPOSITORY="quay.io/gatekeeper/gatekeeper" \
+        PLATFORM="linux/amd64,linux/arm64,linux/arm/v8" \
+        OUTPUT_TYPE=type=registry GENERATE_ATTESTATIONS=true \
+        make docker-buildx-release
+
