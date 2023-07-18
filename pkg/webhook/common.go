@@ -56,7 +56,7 @@ var (
 	serviceaccount                     = fmt.Sprintf("system:serviceaccount:%s:%s", util.GetNamespace(), serviceAccountName)
 	VwhName                            = flag.String("validating-webhook-configuration-name", "gatekeeper-validating-webhook-configuration", "name of the ValidatingWebhookConfiguration")
 	MwhName                            = flag.String("mutating-webhook-configuration-name", "gatekeeper-mutating-webhook-configuration", "name of the MutatingWebhookConfiguration")
-	TLSMinVersion                      = flag.String("tls-min-version", "1.3", "minimum version of TLS supported")
+	TLSMinVersion                      = flag.String("tls-min-version", "1.2", "minimum version of TLS supported")
 	ClientCAName                       = flag.String("client-ca-name", "", "name of the certificate authority bundle to authenticate the Kubernetes API server requests against")
 	CertCNName                         = flag.String("client-cn-name", "kube-apiserver", "expected CN name on the client certificate attached by apiserver in requests to the webhook")
 )
