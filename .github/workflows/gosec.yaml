@@ -1,0 +1,27 @@
+name: GoSec scan
+
+on:
+  push:
+    branches:
+      - master
+      - release-[0-9]+.[0-9]+
+  pull_request:
+    branches:
+      - master
+      - release-[0-9]+.[0-9]+
+
+jobs:
+  gosec:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Gatekeeper
+        uses: actions/checkout@v4
+      - name: Run Gosec Security Scanner
+        uses: securego/gosec@v2.15.0
+        with:
+          args: -no-fail -fmt sonarqube -out gosec.json -stdout -exclude-dir=.go -exclude-dir=test ./...
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: artifacts
+          path: gosec.json

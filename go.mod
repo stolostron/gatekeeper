@@ -1,6 +1,6 @@
 module github.com/open-policy-agent/gatekeeper/v3
 
-go 1.20
+go 1.21
 
 // We are forking from commit 116a1b831fffe7ccc3c8145306c3e1a3b1b14ffa (tag: v0.15.0) to enable dynamic informer caching
 replace sigs.k8s.io/controller-runtime => ./third_party/sigs.k8s.io/controller-runtime
@@ -33,12 +33,12 @@ require (
 	go.opentelemetry.io/otel/sdk/metric v1.19.0
 	go.uber.org/automaxprocs v1.5.3
 	go.uber.org/zap v1.24.0
-	golang.org/x/net v0.19.0
+	golang.org/x/net v0.23.0 // GO-2024-2611; >=v0.23.0
 	golang.org/x/oauth2 v0.13.0
 	golang.org/x/sync v0.5.0
 	golang.org/x/time v0.5.0
 	google.golang.org/grpc v1.60.1
-	google.golang.org/protobuf v1.31.0
+	google.golang.org/protobuf v1.33.0 // GO-2024-2687; >=v1.33.0
 	gopkg.in/yaml.v2 v2.4.0
 	gopkg.in/yaml.v3 v3.0.1
 	k8s.io/api v0.28.6
@@ -143,10 +143,10 @@ require (
 	go.opentelemetry.io/proto/otlp v1.0.0 // indirect
 	go.uber.org/atomic v1.11.0 // indirect
 	go.uber.org/multierr v1.11.0 // indirect
-	golang.org/x/crypto v0.17.0 // indirect
+	golang.org/x/crypto v0.21.0 // indirect
 	golang.org/x/exp v0.0.0-20220722155223-a9213eeb770e // indirect
-	golang.org/x/sys v0.15.0 // indirect
-	golang.org/x/term v0.15.0 // indirect
+	golang.org/x/sys v0.18.0 // indirect
+	golang.org/x/term v0.18.0 // indirect
 	golang.org/x/text v0.14.0 // indirect
 	gomodules.xyz/jsonpatch/v2 v2.3.0 // indirect
 	google.golang.org/api v0.149.0 // indirect
