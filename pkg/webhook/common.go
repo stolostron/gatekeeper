@@ -53,6 +53,7 @@ var (
 	emitAdmissionEvents                = flag.Bool("emit-admission-events", false, "(alpha) emit Kubernetes events for each admission violation")
 	admissionEventsInvolvedNamespace   = flag.Bool("admission-events-involved-namespace", false, "emit admission events for each violation in the involved objects namespace, the default (false) generates events in the namespace Gatekeeper is installed in. Admission events from cluster-scoped resources will still follow the default behavior")
 	logStatsAdmission                  = flag.Bool("log-stats-admission", false, "(alpha) log stats for admission webhook")
+	tlsMinVersion                      = flag.String("tls-min-version", "1.2", "minimum version of TLS supported")
 	serviceaccount                     = fmt.Sprintf("system:serviceaccount:%s:%s", util.GetNamespace(), serviceAccountName)
 	VwhName                            = flag.String("validating-webhook-configuration-name", "gatekeeper-validating-webhook-configuration", "name of the ValidatingWebhookConfiguration")
 	MwhName                            = flag.String("mutating-webhook-configuration-name", "gatekeeper-mutating-webhook-configuration", "name of the MutatingWebhookConfiguration")
