@@ -1,34 +1,14 @@
 name: Sonarcloud scan
 
 on:
-  push:
-    branches:
-      - master
-      - release-[0-9]+.[0-9]+
-  pull_request:
-    branches:
-      - master
-      - release-[0-9]+.[0-9]+
+  workflow_run:
+    workflows:
+      - GoSec scan
+    types:
+      - completed
 
 jobs:
-  gosec:
-    runs-on: ubuntu-latest
-    name: GoSec Scan
-    steps:
-      - name: Checkout Gatekeeper
-        uses: actions/checkout@v4
-      - name: Run Gosec Security Scanner
-        uses: securego/gosec@v2.15.0
-        with:
-          args: -fmt sonarqube -out gosec.json -stdout -exclude-dir=.go -exclude-dir=test ./...
-      - name: Upload artifacts
-        uses: actions/upload-artifact@v3
-        with:
-          name: artifacts
-          path: gosec.json
-
   sonarcloud:
-    needs: [ gosec ]
     uses: stolostron/governance-policy-framework/.github/workflows/sonarcloud.yml@main
     secrets:
       SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
