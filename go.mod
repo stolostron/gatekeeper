@@ -1,6 +1,6 @@
 module github.com/open-policy-agent/gatekeeper
 
-go 1.18
+go 1.21
 
 // Prevent otel dependencies from getting out of sync.
 replace (
