@@ -23,7 +23,11 @@ jobs:
         username: ${{ secrets.QUAY_USER }}
         password: ${{ secrets.QUAY_PASSWORD }}
 
-    - name: build and push
+    - name: build
       run: |
         REPOSITORY=${{env.REPOSITORY}} VERSION=${{env.VERSION_TAG}} make docker-buildx-release
+
+    - name: push
+      run: |
+        docker push ${{env.REPOSITORY}}:${{env.VERSION_TAG}}
         
