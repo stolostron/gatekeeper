@@ -46,6 +46,7 @@ LDFLAGS := "-X github.com/open-policy-agent/gatekeeper/v3/pkg/version.Version=$(
 
 PLATFORM ?= linux/amd64
 OUTPUT_TYPE ?= type=docker
+TARGETCGO ?= 1
 
 MANAGER_IMAGE_PATCH := "apiVersion: apps/v1\
 \nkind: Deployment\
@@ -375,6 +376,7 @@ docker-buildx: docker-buildx-builder
 	docker buildx build \
 		$(_ATTESTATIONS) \
 		--build-arg LDFLAGS=${LDFLAGS} \
+		--build-arg TARGETCGO=${TARGETCGO} \
 		--platform="$(PLATFORM)" \
 		--output=$(OUTPUT_TYPE) \
 		-t $(IMG) .

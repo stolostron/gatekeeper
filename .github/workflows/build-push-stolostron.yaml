@@ -23,12 +23,11 @@ jobs:
         username: ${{ secrets.QUAY_USER }}
         password: ${{ secrets.QUAY_PASSWORD }}
 
-    - name: build
+    - name: build and push
       run: |
-        REPOSITORY=${{env.REPOSITORY}} VERSION=${{env.VERSION_TAG}} \
-        PLATFORM="linux/amd64,linux/arm64,linux/arm/v7"  OUTPUT_TYPE=type=registry GENERATE_ATTESTATIONS=true make docker-buildx-release
+        IMG="${{env.REPOSITORY}}:${{env.VERSION_TAG}}" \
+        TARGETCGO=0 \
+        PLATFORM="linux/amd64,linux/arm64,linux/arm/v7" \
+        OUTPUT_TYPE=type=registry GENERATE_ATTESTATIONS=true \
+        make docker-buildx
 
-    - name: push
-      run: |
-        docker push ${{env.REPOSITORY}}:${{env.VERSION_TAG}}
-        
