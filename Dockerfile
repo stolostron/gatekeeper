@@ -23,7 +23,7 @@ ENV GO111MODULE=on \
     CXX=aarch64-linux-gnu-g++ \
     CROSS_COMPILE=aarch64-linux-gnu-
 
-RUN apt -y update && apt -y install gcc-aarch64-linux-gnu g++-aarch64-linux-gnu && apt -y clean all
+RUN apt -y update && apt -y install gcc-aarch64-linux-gnu g++-aarch64-linux-gnu g++-x86-64-linux-gnu libc6-dev-amd64-cross libjpeg-dev:amd64 && apt -y clean all
      
 WORKDIR /go/src/github.com/open-policy-agent/gatekeeper
 COPY . .
