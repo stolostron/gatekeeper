@@ -22,12 +22,21 @@ ENV GO111MODULE=on \
     CC=aarch64-linux-gnu-gcc \
     CROSS_COMPILE=aarch64-linux-gnu-
 
-RUN apt -y update && apt -y install gcc-aarch64-linux-gnu g++-aarch64-linux-gnu g++-x86-64-linux-gnu libc6-dev-amd64-cross libjpeg-dev:amd64 && apt -y clean all
-     
+RUN if [ "${TARGETPLATFORM}" = "linux/arm64" ]; then \
+        apt -y update && apt -y install gcc-aarch64-linux-gnu && apt -y clean all; \
+    elif [ "${TARGETPLATFORM}" = "linux/arm/v7" ]; then \
+        apt -y update && apt -y install gcc-arm-none-eabi && apt -y clean all; \
+    fi
+
 WORKDIR /go/src/github.com/open-policy-agent/gatekeeper
 COPY . .
 
-RUN go build -mod vendor -a -ldflags "${LDFLAGS}" -o manager
+RUN if [ "${TARGETPLATFORM}" = "linux/arm64" ]; then \
+        export CC=aarch64-linux-gnu-gcc; \
+    elif [ "${TARGETPLATFORM}" = "linux/arm/v7" ]; then \
+        export CC=arm-linux-gnueabihf-gcc; \
+    fi; \
+    go build -mod vendor -a -ldflags "${LDFLAGS}" -o manager
 
 FROM $BASEIMAGE
 
