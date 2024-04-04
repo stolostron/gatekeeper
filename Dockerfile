@@ -23,7 +23,7 @@ ENV GO111MODULE=on \
 RUN if [ "${TARGETPLATFORM}" = "linux/arm64" ]; then \
         apt -y update && apt -y install gcc-aarch64-linux-gnu && apt -y clean all; \
     elif [ "${TARGETPLATFORM}" = "linux/arm/v7" ]; then \
-        apt -y update && apt -y install gcc-arm-none-eabi && apt -y clean all; \
+        apt -y update && apt -y install gcc-arm-linux-gnueabihf && apt -y clean all; \
     fi
 
 WORKDIR /go/src/github.com/open-policy-agent/gatekeeper
