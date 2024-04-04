@@ -19,7 +19,7 @@ ENV GO111MODULE=on \
     GOOS=${TARGETOS} \
     GOARCH=${TARGETARCH} \
     GOARM=${TARGETVARIANT} \
-    CC=gcc 
+    CC=arm-linux-gnueabi-gcc 
      
 WORKDIR /go/src/github.com/open-policy-agent/gatekeeper
 COPY . .
