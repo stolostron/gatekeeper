@@ -24,13 +24,13 @@ jobs:
 
     - name: install
       run: |
-        sudo apt update && sudo apt install gcc-13 gcc-13-aarch64-linux-gnu
+        sudo apt-get update && sudo apt-get install gcc-13 gcc-13-aarch64-linux-gnu
 
 
     - name: build and push
       run: |
         IMG="${{env.REPOSITORY}}:${{env.VERSION_TAG}}" \
-        TARGETCGO=0 \
+        TARGETCGO=1 \
         PLATFORM="linux/amd64,linux/arm64,linux/arm/v7" \
         OUTPUT_TYPE=type=registry GENERATE_ATTESTATIONS=true \
         make docker-buildx

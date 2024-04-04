@@ -18,7 +18,8 @@ ENV GO111MODULE=on \
     CGO_ENABLED=${TARGETCGO} \
     GOOS=${TARGETOS} \
     GOARCH=${TARGETARCH} \
-    GOARM=${TARGETVARIANT}
+    GOARM=${TARGETVARIANT} \
+    CC=gcc-13-aarch64-linux-gnu
 
 WORKDIR /go/src/github.com/open-policy-agent/gatekeeper
 COPY . .
