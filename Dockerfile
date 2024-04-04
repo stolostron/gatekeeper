@@ -19,7 +19,7 @@ ENV GO111MODULE=on \
     GOOS=${TARGETOS} \
     GOARCH=${TARGETARCH} \
     GOARM=${TARGETVARIANT} \
-    CC=arm-linux-gnueabi-gcc 
+    CC=gcc-aarch64-linux-gnu
 
 RUN apt -y update && apt -y install gcc-aarch64-linux-gnu && apt -y clean all
      
