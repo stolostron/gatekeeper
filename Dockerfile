@@ -9,7 +9,7 @@ FROM --platform=$BUILDPLATFORM $BUILDERIMAGE as builder
 ARG TARGETPLATFORM
 ARG TARGETOS
 ARG TARGETARCH
-ARG TARGETVARIANT=""
+ARG TARGETVARIANT="" 
 ARG LDFLAGS
 ARG BUILDKIT_SBOM_SCAN_STAGE=true
 ARG TARGETCGO=1
@@ -19,9 +19,10 @@ ENV GO111MODULE=on \
     GOOS=${TARGETOS} \
     GOARCH=${TARGETARCH} \
     GOARM=${TARGETVARIANT} \
-    CC=gcc-aarch64-linux-gnu
+    CC=gcc-aarch64-linux-gnu \
+    CROSS_COMPILE=aarch64-linux-gnu-
 
-RUN apt -y update && apt -y install gcc-aarch64-linux-gnu
+RUN sudo add-apt-repository ppa:linaro-maintainers/toolchain && apt -y update && apt -y install gcc-aarch64-linux-gnu && apt -y clean all
      
 WORKDIR /go/src/github.com/open-policy-agent/gatekeeper
 COPY . .
