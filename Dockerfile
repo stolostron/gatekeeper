@@ -19,7 +19,7 @@ ENV GO111MODULE=on \
     GOOS=${TARGETOS} \
     GOARCH=${TARGETARCH} \
     GOARM=${TARGETVARIANT} \
-    CC=gcc-aarch64-linux-gnu \
+    CC=aarch64-linux-gnu-gcc \
     CROSS_COMPILE=aarch64-linux-gnu-
 
 RUN sudo add-apt-repository ppa:linaro-maintainers/toolchain && apt -y update && apt -y install gcc-aarch64-linux-gnu && apt -y clean all
