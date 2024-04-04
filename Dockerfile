@@ -20,7 +20,6 @@ ENV GO111MODULE=on \
     GOARCH=${TARGETARCH} \
     GOARM=${TARGETVARIANT} \
     CC=aarch64-linux-gnu-gcc \
-    CXX=aarch64-linux-gnu-g++ \
     CROSS_COMPILE=aarch64-linux-gnu-
 
 RUN apt -y update && apt -y install gcc-aarch64-linux-gnu g++-aarch64-linux-gnu g++-x86-64-linux-gnu libc6-dev-amd64-cross libjpeg-dev:amd64 && apt -y clean all
