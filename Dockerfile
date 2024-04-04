@@ -18,9 +18,7 @@ ENV GO111MODULE=on \
     CGO_ENABLED=${TARGETCGO} \
     GOOS=${TARGETOS} \
     GOARCH=${TARGETARCH} \
-    GOARM=${TARGETVARIANT} \
-    CC=aarch64-linux-gnu-gcc \
-    CROSS_COMPILE=aarch64-linux-gnu-
+    GOARM=${TARGETVARIANT} 
 
 RUN if [ "${TARGETPLATFORM}" = "linux/arm64" ]; then \
         apt -y update && apt -y install gcc-aarch64-linux-gnu && apt -y clean all; \
