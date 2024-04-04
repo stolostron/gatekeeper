@@ -21,10 +21,15 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
-
+    - name: Set up QEMU
+      uses: docker/setup-qemu-action@v3
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
     - name: install
       run: |
-        sudo apt-get update && sudo apt-get install gcc-13 gcc-13-aarch64-linux-gnu
+        sudo apt-get update
+        sudo add-apt-repository universe
+        sudo apt-get install gcc-13-aarch64-linux-gnu
 
 
     - name: build and push
