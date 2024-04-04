@@ -28,7 +28,7 @@ jobs:
     - name: install
       run: |
         sudo apt-get update
-        sudo apt-get install gcc-13
+        sudo apt-get install build-essential gcc-13
 
 
     - name: build and push
