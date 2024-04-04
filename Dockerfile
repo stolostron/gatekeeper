@@ -19,9 +19,11 @@ ENV GO111MODULE=on \
     GOOS=${TARGETOS} \
     GOARCH=${TARGETARCH} \
     GOARM=${TARGETVARIANT} \
-    CC=aarch64-linux-gnu-gcc 
+    CC=aarch64-linux-gnu-gcc \
+    CXX=aarch64-linux-gnu-g++ \
+    CROSS_COMPILE=aarch64-linux-gnu-
 
-RUN apt -y update && apt -y install gcc-aarch64-linux-gnu && apt -y clean all
+RUN apt -y update && apt -y install gcc-aarch64-linux-gnu g++-aarch64-linux-gnu && apt -y clean all
      
 WORKDIR /go/src/github.com/open-policy-agent/gatekeeper
 COPY . .
