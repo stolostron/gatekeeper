@@ -5,10 +5,6 @@ on:
     tags:
       - 'v*' # tags matching v*, i.e. v0.0.1, v1.0.0-rc.0
 
-env:
-  VERSION_TAG: ${{ github.ref_name }}
-  REPOSITORY: quay.io/gatekeeper/gatekeeper
-
 jobs:
   build:
     name: Image build and push
@@ -25,8 +21,8 @@ jobs:
 
     - name: build and push
       run: |
-        REPOSITORY=${{env.REPOSITORY}} \
+        REPOSITORY="quay.io/gatekeeper/gatekeeper" \
         PLATFORM="linux/amd64,linux/arm64,linux/arm/v8" \
         OUTPUT_TYPE=type=registry GENERATE_ATTESTATIONS=true \
-        docker-buildx-release
+        make docker-buildx-release
 
