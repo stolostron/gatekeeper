@@ -24,5 +24,6 @@ jobs:
         REPOSITORY="quay.io/gatekeeper/gatekeeper" \
         PLATFORM="linux/amd64,linux/arm64,linux/arm/v8" \
         OUTPUT_TYPE=type=registry GENERATE_ATTESTATIONS=true \
+        VERSION=${{ github.ref_name }} \
         make docker-buildx-release
 
