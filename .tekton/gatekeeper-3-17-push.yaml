@@ -27,6 +27,12 @@ spec:
     value: build/Dockerfile.rhtap
   - name: path-context
     value: .
+  - name: build-platforms
+    value:
+      - linux/x86_64
+      - linux-mlarge/arm64
+      - linux/ppc64le
+      - linux/s390x
   pipelineSpec:
     description: |
       This pipeline is ideal for building multi-arch container images from a Containerfile while maintaining trust after pipeline customization.
