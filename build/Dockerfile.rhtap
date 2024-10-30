@@ -1,0 +1,16 @@
+FROM brew.registry.redhat.io/rh-osbs/openshift-golang-builder:rhel_9_1.22 AS builder
+ENV LDFLAGS="-X github.com/open-policy-agent/gatekeeper/v3/pkg/version.Version=v3.17.1" \
+    GO111MODULE=on \
+    CGO_ENABLED=1
+
+WORKDIR /go/src/github.com/open-policy-agent/gatekeeper
+COPY . .
+
+RUN go build -mod vendor -a -ldflags "${LDFLAGS}" -o manager
+
+FROM registry.access.redhat.com/ubi9/ubi-minimal:latest
+WORKDIR /
+COPY --from=builder /go/src/github.com/open-policy-agent/gatekeeper/manager .
+RUN microdnf -y update && microdnf -y clean all
+USER 65532:65532
+ENTRYPOINT ["/manager"]
