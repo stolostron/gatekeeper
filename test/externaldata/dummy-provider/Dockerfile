@@ -20,7 +20,9 @@ WORKDIR /go/src/github.com/open-policy-agent/gatekeeper/test/externaldata/dummy-
 
 COPY . .
 
-RUN go mod init && go mod tidy
+RUN go mod init && \
+    go get github.com/open-policy-agent/frameworks/constraint@v0.0.0-20240801235658-6ec97bae5028 && \
+    go mod tidy
 
 RUN go build -o provider provider.go
 
