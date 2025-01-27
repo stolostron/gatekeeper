@@ -29,8 +29,19 @@ RUN if [ "${TARGETPLATFORM}" = "linux/arm64" ]; then \
     fi
 
 WORKDIR /go/src/github.com/open-policy-agent/gatekeeper
-COPY . .
 
+# Copy the Go module manifests and dependencies
+COPY go.mod go.mod
+COPY go.sum go.sum
+COPY vendor/ vendor/
+
+# Copy the source code
+COPY main.go main.go
+COPY apis/ apis/
+COPY pkg/ pkg/
+
+
+# Build the controller
 RUN  if [ "${TARGETPLATFORM}" = "linux/arm64" ]; then \
         export CC=aarch64-linux-gnu-gcc; \
     elif [ "${TARGETPLATFORM}" = "linux/arm/v8" ]; then \
