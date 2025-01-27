@@ -4,10 +4,22 @@ ENV LDFLAGS="-X github.com/open-policy-agent/gatekeeper/v3/pkg/version.Version=v
     CGO_ENABLED=1
 
 WORKDIR /go/src/github.com/open-policy-agent/gatekeeper
-COPY . .
 
+# Copy the Go module manifests and dependencies
+COPY go.mod go.mod
+COPY go.sum go.sum
+COPY vendor/ vendor/
+
+# Copy the source code
+COPY main.go main.go
+COPY apis/ apis/
+COPY pkg/ pkg/
+
+# Build the controller
 RUN go build -mod vendor -a -ldflags "${LDFLAGS}" -o manager
 
+
+# Copy the binary to the UBI-minimal base image
 FROM registry.access.redhat.com/ubi9/ubi-minimal:latest
 WORKDIR /
 COPY --from=builder /go/src/github.com/open-policy-agent/gatekeeper/manager .
