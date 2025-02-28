@@ -39,7 +39,8 @@
    git checkout -b patch-release-${NEW_RELEASE}
    git rebase -X ours ${TAG}
    sed -i "s%\(image: \)openpolicyagent/gatekeeper:%\1quay.io/gatekeeper/gatekeeper:%" config/manager/manager.yaml
-   sed -i "s%\(image: \)openpolicyagent/gatekeeper:%\1quay.io/gatekeeper/gatekeeper:%" manifest_staging/deploy/gatekeeper.yaml 
+   sed -i "s%\(image: \)openpolicyagent/gatekeeper:%\1quay.io/gatekeeper/gatekeeper:%" manifest_staging/deploy/gatekeeper.yaml
+   sed -i "s%version.Version=v[^\"]\+%version.Version=v${NEW_RELEASE_VERSION}%" build/Dockerfile.rhtap
    ```
    **NOTE:** As a sanity check, you can verify the new branch by visiting the GitHub comparison
    page:
@@ -47,10 +48,14 @@
    echo "https://github.com/open-policy-agent/gatekeeper/compare/release-${NEW_RELEASE}...stolostron:gatekeeper:release-${NEW_RELEASE}"
    ```
 6. There now should be one or more commits on top from customizations in `stolostron`. Review the
-   changes and squash the commits into a single commit, removing irrelevant commits and updating the
-   resulting description if necessary:
+   changes and squash the commits into a single commit, removing irrelevant commits, updating the
+   resulting description if necessary, and removing the stale Konflux artifacts:
    ```shell
    git rebase -i ${TAG}
+   ```
+   ```shell
+   rm -r .tekton/
+   go mod tidy
    go mod vendor
    git add .
    git commit --amend --no-edit
