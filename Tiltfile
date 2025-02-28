@@ -34,7 +34,7 @@ COPY bin/manager .
 def build_manager():
     cmd = [
         "make tilt-prepare",
-        "GO111MODULE=on CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -mod vendor -a -o .tiltbuild/bin/manager",
+        "GO111MODULE=on CGO_ENABLED=1 GOOS=linux GOARCH=amd64 go build -mod vendor -a -o .tiltbuild/bin/manager",
     ]
     local_resource(
         "manager",
