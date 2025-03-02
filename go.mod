@@ -5,7 +5,7 @@ go 1.22.0
 require (
 	cloud.google.com/go/trace v1.10.11
 	github.com/GoogleCloudPlatform/opentelemetry-operations-go/exporter/metric v0.44.0
-	github.com/dapr/go-sdk v1.8.0
+	github.com/dapr/go-sdk v1.12.0
 	github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc
 	github.com/dominikbraun/graph v0.16.2
 	github.com/go-logr/logr v1.4.2
