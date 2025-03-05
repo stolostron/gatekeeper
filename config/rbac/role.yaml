@@ -2,7 +2,6 @@
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
-  creationTimestamp: null
   name: manager-role
 rules:
 - apiGroups:
@@ -66,18 +65,9 @@ rules:
   - update
 - apiGroups:
   - constraints.gatekeeper.sh
-  resources:
-  - '*'
-  verbs:
-  - create
-  - delete
-  - get
-  - list
-  - patch
-  - update
-  - watch
-- apiGroups:
   - expansion.gatekeeper.sh
+  - mutations.gatekeeper.sh
+  - status.gatekeeper.sh
   resources:
   - '*'
   verbs:
@@ -101,18 +91,6 @@ rules:
   - update
   - watch
 - apiGroups:
-  - mutations.gatekeeper.sh
-  resources:
-  - '*'
-  verbs:
-  - create
-  - delete
-  - get
-  - list
-  - patch
-  - update
-  - watch
-- apiGroups:
   - policy
   resourceNames:
   - gatekeeper-admin
@@ -120,18 +98,6 @@ rules:
   - podsecuritypolicies
   verbs:
   - use
-- apiGroups:
-  - status.gatekeeper.sh
-  resources:
-  - '*'
-  verbs:
-  - create
-  - delete
-  - get
-  - list
-  - patch
-  - update
-  - watch
 - apiGroups:
   - templates.gatekeeper.sh
   resources:
@@ -165,7 +131,6 @@ rules:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
-  creationTimestamp: null
   name: manager-role
   namespace: gatekeeper-system
 rules:
