@@ -1,6 +1,6 @@
 module github.com/open-policy-agent/gatekeeper/v3
 
-go 1.22.0
+go 1.23.6
 
 require (
 	cloud.google.com/go/trace v1.10.11
@@ -31,7 +31,7 @@ require (
 	go.uber.org/automaxprocs v1.5.3
 	go.uber.org/zap v1.26.0
 	golang.org/x/net v0.34.0
-	golang.org/x/oauth2 v0.21.0
+	golang.org/x/oauth2 v0.27.0
 	golang.org/x/sync v0.10.0
 	golang.org/x/time v0.6.0
 	google.golang.org/grpc v1.66.0
