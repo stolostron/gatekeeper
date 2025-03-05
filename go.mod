@@ -34,7 +34,7 @@ require (
 	go.uber.org/automaxprocs v1.5.3
 	go.uber.org/zap v1.24.0
 	golang.org/x/net v0.33.0
-	golang.org/x/oauth2 v0.13.0
+	golang.org/x/oauth2 v0.27.0
 	golang.org/x/sync v0.10.0
 	golang.org/x/time v0.5.0
 	google.golang.org/grpc v1.60.1
@@ -54,8 +54,7 @@ require (
 )
 
 require (
-	cloud.google.com/go/compute v1.23.1 // indirect
-	cloud.google.com/go/compute/metadata v0.2.3 // indirect
+	cloud.google.com/go/compute/metadata v0.3.0 // indirect
 	cloud.google.com/go/monitoring v1.16.1 // indirect
 	github.com/AdaLogics/go-fuzz-headers v0.0.0-20230811130428-ced1acdcaa24 // indirect
 	github.com/Azure/go-ansiterm v0.0.0-20210617225240-d185dfc1b5a1 // indirect
@@ -150,7 +149,6 @@ require (
 	golang.org/x/text v0.21.0 // indirect
 	gomodules.xyz/jsonpatch/v2 v2.3.0 // indirect
 	google.golang.org/api v0.149.0 // indirect
-	google.golang.org/appengine v1.6.8 // indirect
 	google.golang.org/genproto v0.0.0-20231016165738-49dd2c1f3d0b // indirect
 	google.golang.org/genproto/googleapis/api v0.0.0-20231016165738-49dd2c1f3d0b // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20231016165738-49dd2c1f3d0b // indirect
