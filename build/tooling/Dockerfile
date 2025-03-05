@@ -1,6 +1,6 @@
-FROM golang:1.21-bullseye@sha256:6ac4c35eed9933eb7ae528e9549182bcf421c7f0e39b7337411a54c2f6a8b680
+FROM golang:1.23-bullseye@sha256:b7575efc7b1ca22e9ce7510979d4c1b5564c970279a66aea44e8b57ed133bfc7
 
-RUN GO111MODULE=on go install sigs.k8s.io/controller-tools/cmd/controller-gen@v0.10.0
+RUN GO111MODULE=on go install sigs.k8s.io/controller-tools/cmd/controller-gen@v0.16.5
 RUN GO111MODULE=on go install k8s.io/code-generator/cmd/conversion-gen@v0.25.4
 
 RUN mkdir /gatekeeper
