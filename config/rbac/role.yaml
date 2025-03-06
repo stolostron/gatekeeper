@@ -65,9 +65,18 @@ rules:
   - update
 - apiGroups:
   - constraints.gatekeeper.sh
+  resources:
+  - '*'
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
   - expansion.gatekeeper.sh
-  - mutations.gatekeeper.sh
-  - status.gatekeeper.sh
   resources:
   - '*'
   verbs:
@@ -91,6 +100,18 @@ rules:
   - update
   - watch
 - apiGroups:
+  - mutations.gatekeeper.sh
+  resources:
+  - '*'
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
   - policy
   resourceNames:
   - gatekeeper-admin
@@ -98,6 +119,18 @@ rules:
   - podsecuritypolicies
   verbs:
   - use
+- apiGroups:
+  - status.gatekeeper.sh
+  resources:
+  - '*'
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
 - apiGroups:
   - templates.gatekeeper.sh
   resources:
