@@ -20,7 +20,7 @@ RUN go mod init && go mod tidy && go mod vendor
 
 RUN go build -o main
 
-FROM gcr.io/distroless/static-debian12@sha256:8dd8d3ca2cf283383304fd45a5c9c74d5f2cd9da8d3b077d720e264880077c65
+FROM gcr.io/distroless/static-debian12@sha256:95ea148e8e9edd11cc7f639dc11825f38af86a14e5c7361753c741ceadef2167
 
 WORKDIR /
 
