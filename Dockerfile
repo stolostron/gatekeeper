@@ -2,9 +2,12 @@ ARG BUILDPLATFORM="linux/amd64"
 ARG BUILDERIMAGE="golang:1.23-bullseye"
 # Use distroless as minimal base image to package the manager binary
 # Refer to https://github.com/GoogleContainerTools/distroless for more details
-ARG BASEIMAGE="gcr.io/distroless/cc-debian11:nonroot"
+# 
+# CGO_ENABLED requires the 'base' image: 
+# - https://github.com/GoogleContainerTools/distroless/blob/main/base/README.md
+ARG BASEIMAGE="gcr.io/distroless/base-debian11:nonroot"
 
-FROM --platform=$BUILDPLATFORM $BUILDERIMAGE as builder
+FROM --platform=$BUILDPLATFORM $BUILDERIMAGE AS builder
 
 ARG TARGETPLATFORM
 ARG TARGETOS
@@ -26,15 +29,26 @@ RUN if [ "${TARGETPLATFORM}" = "linux/arm64" ]; then \
     fi
 
 WORKDIR /go/src/github.com/open-policy-agent/gatekeeper
-COPY . .
 
+# Copy the Go module manifests and dependencies
+COPY go.mod go.mod
+COPY go.sum go.sum
+COPY vendor/ vendor/
+
+# Copy the source code
+COPY main.go main.go
+COPY apis/ apis/
+COPY pkg/ pkg/
+
+
+# Build the controller
 RUN  if [ "${TARGETPLATFORM}" = "linux/arm64" ]; then \
         export CC=aarch64-linux-gnu-gcc; \
     elif [ "${TARGETPLATFORM}" = "linux/arm/v8" ]; then \
         export CC=arm-linux-gnueabihf-gcc; \
     fi; \
     go build -mod vendor -a -ldflags "${LDFLAGS}" -o manager
-   
+
 
 FROM $BASEIMAGE
 

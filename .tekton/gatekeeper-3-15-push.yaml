@@ -7,8 +7,8 @@ metadata:
     build.appstudio.redhat.com/target_branch: '{{target_branch}}'
     pipelinesascode.tekton.dev/cancel-in-progress: "false"
     pipelinesascode.tekton.dev/max-keep-runs: "3"
-    pipelinesascode.tekton.dev/on-cel-expression: event == "push" && target_branch == "release-3.15"
-  creationTimestamp: null
+    pipelinesascode.tekton.dev/on-cel-expression: event == "push" && target_branch == "release-3.15" && (".tekton/gatekeeper-*.yaml".pathChanged() || "Dockerfile".pathChanged() ||  "build/Dockerfile.rhtap".pathChanged() || "go.{mod,sum}".pathChanged() ||  "main.go".pathChanged() || "{apis,pkg,vendor}/***".pathChanged())
+    creationTimestamp: null
   labels:
     appstudio.openshift.io/application: gatekeeper-operator-3-15
     appstudio.openshift.io/component: gatekeeper-3-15
@@ -30,6 +30,8 @@ spec:
       value: build/Dockerfile.rhtap
     - name: path-context
       value: .
+    - name: hermetic
+      value: true
   pipelineSpec:
     description: |
       This pipeline is ideal for building multi-arch container images from a Containerfile while maintaining trust after pipeline customization.
