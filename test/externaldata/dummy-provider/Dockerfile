@@ -1,5 +1,5 @@
 ARG BUILDPLATFORM="linux/amd64"
-ARG BUILDERIMAGE="golang:1.23-bookworm"
+ARG BUILDERIMAGE="golang:1.24-bookworm"
 ARG BASEIMAGE="gcr.io/distroless/static-debian12:nonroot"
 
 FROM --platform=$BUILDPLATFORM $BUILDERIMAGE as builder
