@@ -37,16 +37,17 @@
    repository to see whether there are new workflows that might need to be disabled (for example, if
    it requires a token that is not accessible in this repository).
 5. Fetch the previous release branch from `stolostron/gatekeeper`, create a new patch branch, and
-   rebase on the new release branch, accepting conflicts from the upstream changes, and replacing
-   the image in the deployment (use `gsed` if on Mac):
+   rebase on the new release branch, accepting conflicts from the upstream changes:
+
    ```shell
+   SED=$([[ $(uname -s | tr '[:upper:]' '[:lower:]') == "darwin" ]] && echo "gsed" || echo "sed" )
    git fetch ${STOLOSTRON} release-${PREV_RELEASE}
    git checkout ${STOLOSTRON}/release-${PREV_RELEASE}
    git checkout -b patch-release-${NEW_RELEASE}
    git rebase -X ours ${TAG}
-   sed -i "s%\(image: \)openpolicyagent/gatekeeper:%\1quay.io/gatekeeper/gatekeeper:%" config/manager/manager.yaml
-   sed -i "s%\(image: \)openpolicyagent/gatekeeper:%\1quay.io/gatekeeper/gatekeeper:%" manifest_staging/deploy/gatekeeper.yaml
-   sed -i "s%version.Version=v[^\"]\+%version.Version=v${NEW_RELEASE_VERSION}%" build/Dockerfile.rhtap
+   ${SED} -i "s%\(image: \)openpolicyagent/gatekeeper:%\1quay.io/gatekeeper/gatekeeper:%" config/manager/manager.yaml
+   ${SED} -i "s%\(image: \)openpolicyagent/gatekeeper:%\1quay.io/gatekeeper/gatekeeper:%" manifest_staging/deploy/gatekeeper.yaml
+   ${SED} -i "s%version.Version=v[^\"]\+%version.Version=v${NEW_RELEASE_VERSION}%" build/Dockerfile.rhtap
    ```
 
    **NOTE:** As a sanity check, you can verify the new branch by visiting the GitHub comparison
@@ -57,14 +58,14 @@
    ```
 
 6. There now should be one or more commits on top from customizations in `stolostron`. Review the
-   changes and squash the commits into a single commit, removing irrelevant commits, updating the
-   resulting description if necessary, and removing the stale Konflux artifacts:
+   changes and squash the commits into a single commit, removing irrelevant commits, and updating
+   the resulting description if necessary:
+
    ```shell
    git rebase -i ${TAG}
    ```
 
    ```shell
-   rm -r .tekton/
    go mod tidy
    go mod vendor
    git add .
@@ -77,6 +78,7 @@
    ```shell
    FORK="$(git remote -v | grep push | awk '!/(stolostron|open-policy-agent)/ {print $1}')"
    git push -u ${FORK} patch-release-${NEW_RELEASE}
+   gh pr create --repo stolostron/gatekeeper --fill  --base "release-${NEW_RELEASE}"
    ```
 
 8. Once the PR is approved and merged: fetch the latest commits, clean the local tag, and tag and
