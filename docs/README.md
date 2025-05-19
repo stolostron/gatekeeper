@@ -8,18 +8,23 @@
 ## Steps
 
 1. Set the target `open-policy-agent` X.Y.Z version and previous `stolostron` release X.Y version:
+
    ```shell
    NEW_RELEASE_VERSION=X.Y.Z
    PREV_RELEASE=X.Y
    ```
+
 2. Generate the tag, new release, and local remote names:
+
    ```shell
    TAG=v${NEW_RELEASE_VERSION}
    NEW_RELEASE=${NEW_RELEASE_VERSION%.*}
    UPSTREAM="$(git remote -v | grep push | awk '/open-policy-agent/ {print $1}')"
    STOLOSTRON="$(git remote -v | grep push | awk '/stolostron/ {print $1}')"
    ```
+
 3. Fetch the upstream release branch and push to `stolostron`:
+
    ```shell
    git tag --delete ${TAG}
    git fetch --tags ${UPSTREAM} ${TAG}
@@ -27,6 +32,7 @@
    git checkout -b release-${NEW_RELEASE} ${TAG}
    git push ${STOLOSTRON} release-${NEW_RELEASE}
    ```
+
 4. After the push, check the [Actions](https://github.com/stolostron/gatekeeper/actions) tab of the
    repository to see whether there are new workflows that might need to be disabled (for example, if
    it requires a token that is not accessible in this repository).
@@ -42,17 +48,21 @@
    sed -i "s%\(image: \)openpolicyagent/gatekeeper:%\1quay.io/gatekeeper/gatekeeper:%" manifest_staging/deploy/gatekeeper.yaml
    sed -i "s%version.Version=v[^\"]\+%version.Version=v${NEW_RELEASE_VERSION}%" build/Dockerfile.rhtap
    ```
+
    **NOTE:** As a sanity check, you can verify the new branch by visiting the GitHub comparison
    page:
+
    ```shell
    echo "https://github.com/open-policy-agent/gatekeeper/compare/release-${NEW_RELEASE}...stolostron:gatekeeper:release-${NEW_RELEASE}"
    ```
+
 6. There now should be one or more commits on top from customizations in `stolostron`. Review the
    changes and squash the commits into a single commit, removing irrelevant commits, updating the
    resulting description if necessary, and removing the stale Konflux artifacts:
    ```shell
    git rebase -i ${TAG}
    ```
+
    ```shell
    rm -r .tekton/
    go mod tidy
@@ -60,19 +70,24 @@
    git add .
    git commit --amend --no-edit
    ```
+
 7. Push the patch branch to a development fork and open a PR against the new release branch (set
    `FORK` manually if you have more than one development fork):
+
    ```shell
    FORK="$(git remote -v | grep push | awk '!/(stolostron|open-policy-agent)/ {print $1}')"
    git push -u ${FORK} patch-release-${NEW_RELEASE}
    ```
+
 8. Once the PR is approved and merged: fetch the latest commits, clean the local tag, and tag and
    push the new release in `stolostron/gatekeeper`:
 
    - Re-set the new release version if needed:
+
      ```shell
      NEW_RELEASE_VERSION=X.Y.Z
      ```
+
    - Run these commands:
 
      ```shell
