@@ -30,3 +30,13 @@ COPY LICENSE licenses/
 USER 65532:65532
 
 ENTRYPOINT ["/manager"]
+
+LABEL name="gatekeeper/gatekeeper-rhel9"
+LABEL summary="Open Policy Agent Gatekeeper"
+LABEL description="A admission policy controller integrating OPA to help enforce policies and strengthen governance"
+LABEL version="v3.17.2"
+LABEL maintainer="acm-component-maintainers@redhat.com"
+LABEL com.redhat.component="gatekeeper-container"
+LABEL io.openshift.tags="data,images"
+LABEL io.k8s.display-name="OPA Gatekeeper"
+LABEL io.k8s.description="Open Policy Agent Gatekeeper"
