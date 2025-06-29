@@ -1,17 +1,7 @@
 // Copyright The OpenTelemetry Authors
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//     http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+// SPDX-License-Identifier: Apache-2.0
 
+// Package gcp provides a resource detector for GCP Cloud Function.
 package gcp // import "go.opentelemetry.io/contrib/detectors/gcp"
 
 import (
@@ -20,7 +10,7 @@ import (
 
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/sdk/resource"
-	semconv "go.opentelemetry.io/otel/semconv/v1.17.0"
+	semconv "go.opentelemetry.io/otel/semconv/v1.34.0"
 )
 
 const (
@@ -52,7 +42,7 @@ func (f *cloudFunction) Detect(ctx context.Context) (*resource.Resource, error) 
 	if err != nil {
 		return nil, err
 	}
-	region, err := f.cloudRun.cloudRegion(ctx)
+	region, err := f.cloudRun.cloudRegion()
 	if err != nil {
 		return nil, err
 	}
