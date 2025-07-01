@@ -8,17 +8,43 @@ ARG LDFLAGS
 ARG BUILDKIT_SBOM_SCAN_STAGE=true
 
 ENV GO111MODULE=on \
-    CGO_ENABLED=0 \
+    CGO_ENABLED=1 \
     GOOS=${TARGETOS} \
     GOARCH=${TARGETARCH} \
     GOARM=${TARGETVARIANT}
 
+RUN if [ "${TARGETPLATFORM}" = "linux/arm64" ]; then \
+        apt -y update && apt -y install gcc-aarch64-linux-gnu && apt -y clean all; \
+    elif [ "${TARGETPLATFORM}" = "linux/arm/v8" ]; then \
+        apt -y update && apt -y install gcc-arm-linux-gnueabihf && apt -y clean all; \
+    fi
+
 WORKDIR /go/src/github.com/open-policy-agent/gatekeeper
-COPY . .
 
-RUN go build -mod vendor -a -ldflags "${LDFLAGS}" -o manager
+# Copy the Go module manifests and dependencies
+COPY go.mod go.mod
+COPY go.sum go.sum
+COPY vendor/ vendor/
 
-FROM gcr.io/distroless/static-debian12@sha256:87bce11be0af225e4ca761c40babb06d6d559f5767fbf7dc3c47f0f1a466b92c
+# Copy the source code
+COPY main.go main.go
+COPY apis/ apis/
+COPY pkg/ pkg/
+
+# Build the controller
+RUN  if [ "${TARGETPLATFORM}" = "linux/arm64" ]; then \
+        export CC=aarch64-linux-gnu-gcc; \
+    elif [ "${TARGETPLATFORM}" = "linux/arm/v8" ]; then \
+        export CC=arm-linux-gnueabihf-gcc; \
+    fi; \
+    go build -mod vendor -a -ldflags "${LDFLAGS}" -o manager
+
+# Use distroless as minimal base image to package the manager binary
+# Refer to https://github.com/GoogleContainerTools/distroless for more details
+# 
+# CGO_ENABLED requires the 'base' image: 
+# - https://github.com/GoogleContainerTools/distroless/blob/main/base/README.md
+FROM gcr.io/distroless/base-debian12@sha256:347a41e7f263ea7f7aba1735e5e5b1439d9e41a9f09179229f8c13ea98ae94cf
 
 WORKDIR /
 COPY --from=builder /go/src/github.com/open-policy-agent/gatekeeper/manager .
