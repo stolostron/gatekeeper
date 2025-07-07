@@ -9,7 +9,6 @@ metadata:
     pipelinesascode.tekton.dev/cancel-in-progress: 'false'
     pipelinesascode.tekton.dev/max-keep-runs: '3'
     pipelinesascode.tekton.dev/on-cel-expression: event == "push" && target_branch == "release-3.18"
-  creationTimestamp:
   labels:
     appstudio.openshift.io/application: gatekeeper-operator-3-18
     appstudio.openshift.io/component: gatekeeper-3-18
