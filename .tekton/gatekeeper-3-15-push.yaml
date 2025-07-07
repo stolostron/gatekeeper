@@ -10,7 +10,6 @@ metadata:
     pipelinesascode.tekton.dev/cancel-in-progress: 'false'
     pipelinesascode.tekton.dev/max-keep-runs: '3'
     pipelinesascode.tekton.dev/on-cel-expression: event == "push" && target_branch == "release-3.15" && (".tekton/gatekeeper-*.yaml".pathChanged() || "Dockerfile".pathChanged() ||  "build/Dockerfile.rhtap".pathChanged() || "go.{mod,sum}".pathChanged() ||  "main.go".pathChanged() || "{apis,pkg,vendor}/***".pathChanged())
-  creationTimestamp:
   labels:
     appstudio.openshift.io/application: gatekeeper-operator-3-15
     appstudio.openshift.io/component: gatekeeper-3-15
