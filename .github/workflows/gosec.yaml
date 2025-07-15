@@ -11,6 +11,35 @@ on:
       - release-[0-9]+.[0-9]+
 
 jobs:
+  version-check:
+    name: Version Check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Gatekeeper
+        uses: actions/checkout@v4
+      - name: Run Version Check
+        run: |
+          echo "* Checking version consistency across files..."
+
+          # Extract VERSION from Makefile
+          MAKEFILE_VERSION=$(grep "^VERSION :=" Makefile | cut -d' ' -f3)
+
+          # Extract versions from build/Dockerfile.rhtap
+          LDFLAGS_VERSION=$(sed -n 's/.*Version=\([^"]*\).*/\1/p' build/Dockerfile.rhtap)
+          DOCKERFILE_VERSION=$(grep "LABEL version=" build/Dockerfile.rhtap | cut -d'"' -f2)
+
+          # Check if all versions match
+          if [[ "${MAKEFILE_VERSION}" == "${LDFLAGS_VERSION}" ]] && [[ "${MAKEFILE_VERSION}" == "${DOCKERFILE_VERSION}" ]]; then
+            echo "✅ All versions match: ${MAKEFILE_VERSION}"
+          else
+            echo "❌ Version mismatch detected!"
+            echo "  Makefile VERSION variable:      ${MAKEFILE_VERSION}"
+            echo "  build/Dockerfile.rhtap LDFLAGS: ${LDFLAGS_VERSION}" 
+            echo "  build/Dockerfile.rhtap LABEL:   ${DOCKERFILE_VERSION}"
+            echo
+            exit 1
+          fi
+
   gosec:
     runs-on: ubuntu-latest
     steps:
