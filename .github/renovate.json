@@ -13,8 +13,9 @@
   "packageRules": [
     {
       "groupName": "gomod vulnerability",
-      "matchBaseBranches": ["/^release-[0-9]+\\.[0-9+]$/"],
+      "matchBaseBranches": ["/^release-[0-9]+\\.[0-9]+$/"],
       "matchManagers": ["gomod"],
+      "enabled": false,
       "vulnerabilityAlerts": {
         "enabled": true
       },
