@@ -1,14 +1,8 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": ["schedule:earlyMondays"],
-  "dockerfile": {
-    "enabled": false
-  },
   "helm-values": {
     "enabled": false
-  },
-  "gomod": {
-    "groupName": "gomod"
   },
   "packageRules": [
     {
@@ -20,6 +14,19 @@
         "enabled": true
       },
       "osvVulnerabilityAlerts": true
+    },
+    {
+      "matchManagers": ["dockerfile"],
+      "enabled": false
+    },
+    {
+      "matchBaseBranches": ["/^release-[0-9]+\\.[0-9]+$/"],
+      "matchManagers": ["dockerfile"],
+      "matchPackageNames": ["/registry\\.access\\.redhat\\.com\\/ubi[0-9]+\\/ubi-minimal/"],
+      "managerFilePatterns": ["build/Dockerfile.rhtap"],
+      "ignorePaths": ["*"],
+      "enabled": true,
+      "pinDigests": true
     }
   ],
   "timezone": "America/New_York"
