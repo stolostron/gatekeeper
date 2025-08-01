@@ -1,4 +1,4 @@
-FROM brew.registry.redhat.io/rh-osbs/openshift-golang-builder:rhel_9_1.23 AS builder
+FROM brew.registry.redhat.io/rh-osbs/openshift-golang-builder:rhel_9_1.23@sha256:96cfceb50f5323efa1aa8569d4420cdbf1bb391225d5171ef72a0d0ecf028467 AS builder
 ENV LDFLAGS="-X github.com/open-policy-agent/gatekeeper/v3/pkg/version.Version=v3.17.2" \
     GO111MODULE=on \
     CGO_ENABLED=1
@@ -20,7 +20,7 @@ RUN go build -mod vendor -a -ldflags "${LDFLAGS}" -o manager
 
 
 # Copy the binary to the UBI-minimal base image
-FROM registry.access.redhat.com/ubi9/ubi-minimal:latest@sha256:67fee1a132e8e326434214b3c7ce90b2500b2ad02c9790cc61581feb58d281d5
+FROM registry.access.redhat.com/ubi9/ubi-minimal:latest@sha256:0d7cfb0704f6d389942150a01a20cb182dc8ca872004ebf19010e2b622818926
 WORKDIR /
 COPY --from=builder /go/src/github.com/open-policy-agent/gatekeeper/manager .
 
