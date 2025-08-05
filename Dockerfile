@@ -1,4 +1,4 @@
-FROM --platform=$BUILDPLATFORM golang:1.23-bookworm@sha256:462f68e1109cc0415f58ba591f11e650b38e193fddc4a683a3b77d29be8bfb2c AS builder
+FROM --platform=$BUILDPLATFORM golang:1.24-bookworm@sha256:ef8c5c733079ac219c77edab604c425d748c740d8699530ea6aced9de79aea40 AS builder
 
 ARG TARGETPLATFORM
 ARG TARGETOS
@@ -46,7 +46,7 @@ RUN  if [ "${TARGETPLATFORM}" = "linux/arm64" ]; then \
 # 
 # CGO_ENABLED requires the 'base' image: 
 # - https://github.com/GoogleContainerTools/distroless/blob/main/base/README.md
-FROM gcr.io/distroless/base-debian12:nonroot
+FROM gcr.io/distroless/base-debian12:nonroot@sha256:dca858878977f01b80685240ca2cd9c1bb38958e2ab6f4ed5698c0ea23307143
 
 WORKDIR /
 COPY --from=builder /go/src/github.com/open-policy-agent/gatekeeper/manager .
