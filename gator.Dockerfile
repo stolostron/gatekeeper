@@ -1,8 +1,8 @@
 ARG BUILDPLATFORM="linux/amd64"
-ARG BUILDERIMAGE="golang:1.23-bookworm"
+ARG BUILDERIMAGE="golang:1.24-bookworm@sha256:ef8c5c733079ac219c77edab604c425d748c740d8699530ea6aced9de79aea40"
 # Use distroless as minimal base image to package the manager binary
 # Refer to https://github.com/GoogleContainerTools/distroless for more details
-ARG BASEIMAGE="gcr.io/distroless/static-debian12:nonroot"
+ARG BASEIMAGE="gcr.io/distroless/static-debian12:nonroot@sha256:cdf4daaf154e3e27cfffc799c16f343a384228f38646928a1513d925f473cb46"
 
 FROM --platform=$BUILDPLATFORM $BUILDERIMAGE AS builder
 

@@ -1,11 +1,11 @@
 ARG BUILDPLATFORM="linux/amd64"
-ARG BUILDERIMAGE="golang:1.23-bookworm"
+ARG BUILDERIMAGE="golang:1.24-bookworm@sha256:ef8c5c733079ac219c77edab604c425d748c740d8699530ea6aced9de79aea40"
 # Use distroless as minimal base image to package the manager binary
 # Refer to https://github.com/GoogleContainerTools/distroless for more details
 # 
 # CGO_ENABLED requires the 'base' image: 
 # - https://github.com/GoogleContainerTools/distroless/blob/main/base/README.md
-ARG BASEIMAGE="gcr.io/distroless/base-debian12:nonroot"
+ARG BASEIMAGE="gcr.io/distroless/base-debian12:nonroot@sha256:dca858878977f01b80685240ca2cd9c1bb38958e2ab6f4ed5698c0ea23307143"
 
 FROM --platform=$BUILDPLATFORM $BUILDERIMAGE AS builder
 
