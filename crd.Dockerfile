@@ -1,4 +1,4 @@
-FROM --platform=$TARGETPLATFORM registry.k8s.io/kubectl:v1.33.3@sha256:aee0d617a26c05f79f566f710fee7afa9f72336fb4499f6f5f7b9ca00c6cde0c AS builder
+FROM --platform=$TARGETPLATFORM registry.k8s.io/kubectl:v1.33.4@sha256:261a9ed843eb68e3d50da132245e2221d75ca19504130e47bd32788c0ff339a0 AS builder
 
 ARG TARGETPLATFORM
 ARG TARGETOS
