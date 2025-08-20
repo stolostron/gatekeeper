@@ -4,9 +4,20 @@
   "helm-values": {
     "enabled": false
   },
+  "dockerfile": {
+    "groupName": "containerfile images",
+    "managerFilePatterns": ["build/Dockerfile.rhtap"],
+    "ignorePaths": [
+      "*",
+      "build/tooling/",
+      "test/",
+      "vendor/"
+    ],
+    "pinDigests": true
+  },
   "packageRules": [
     {
-      "matchManagers": ["gomod", "dockerfile"],
+      "matchManagers": ["gomod"],
       "enabled": false
     },
     {
@@ -17,15 +28,6 @@
         "enabled": true
       },
       "osvVulnerabilityAlerts": true
-    },
-    {
-      "groupName": "containerfile image",
-      "matchBaseBranches": ["/^release-[0-9]+\\.[0-9]+$/"],
-      "matchManagers": ["dockerfile"],
-      "managerFilePatterns": ["build/Dockerfile.rhtap"],
-      "ignorePaths": ["build/tooling/*", "*"],
-      "enabled": true,
-      "pinDigests": true
     }
   ],
   "timezone": "America/New_York"
