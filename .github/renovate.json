@@ -5,7 +5,6 @@
     "enabled": false
   },
   "dockerfile": {
-    "groupName": "containerfile images",
     "managerFilePatterns": ["build/Dockerfile.rhtap"],
     "ignorePaths": [
       "*",
@@ -16,6 +15,10 @@
     "pinDigests": true
   },
   "packageRules": [
+    {
+      "groupName": "containerfile images",
+      "matchManagers": ["dockerfile"]      
+    },
     {
       "matchManagers": ["gomod"],
       "enabled": false
