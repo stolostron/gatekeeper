@@ -1,5 +1,9 @@
 # Creating a new release branch
 
+**Note:** The manual steps below are for reference only. The release process is now automated and
+should be performed by running [`./build/create-release.sh`](../build/create-release.sh). Please use
+the script instead of following these instructions directly.
+
 ## Prerequisites
 
 - Clone the `gatekeeper` repository and have both `stolostron/gatekeeper` and
