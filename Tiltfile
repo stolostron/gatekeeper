@@ -17,13 +17,13 @@ if settings.get("trigger_mode", "auto").lower() == "manual":
     trigger_mode(TRIGGER_MODE_MANUAL)
 
 TILT_DOCKERFILE = """
-FROM golang:1.23-bookworm as tilt-helper
+FROM golang:1.23-bookworm AS tilt-helper
 # Support live reloading with Tilt
 RUN wget --output-document /restart.sh --quiet https://raw.githubusercontent.com/tilt-dev/rerun-process-wrapper/60eaa572cdf825c646008e1ea28b635f83cefb38/restart.sh && \
     wget --output-document /start.sh --quiet https://raw.githubusercontent.com/tilt-dev/rerun-process-wrapper/60eaa572cdf825c646008e1ea28b635f83cefb38/start.sh && \
     chmod +x /start.sh && chmod +x /restart.sh
 
-FROM gcr.io/distroless/base:debug as tilt
+FROM gcr.io/distroless/base:debug AS tilt
 WORKDIR /
 COPY --from=tilt-helper /start.sh .
 COPY --from=tilt-helper /restart.sh .
@@ -34,7 +34,7 @@ COPY bin/manager .
 def build_manager():
     cmd = [
         "make tilt-prepare",
-        "GO111MODULE=on CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -mod vendor -a -o .tiltbuild/bin/manager",
+        "GO111MODULE=on CGO_ENABLED=1 GOOS=linux GOARCH=amd64 go build -mod vendor -a -o .tiltbuild/bin/manager",
     ]
     local_resource(
         "manager",
