@@ -4,6 +4,9 @@
   "helm-values": {
     "enabled": false
   },
+  "npm": {
+    "enabled": false
+  },
   "dockerfile": {
     "managerFilePatterns": ["build/Dockerfile.rhtap"],
     "ignorePaths": [
