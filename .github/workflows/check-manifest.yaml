@@ -1,6 +1,8 @@
 name: check-manifest
 on:
   push:
+    branches:
+      - release-[0-9]+.[0-9]+
     paths-ignore:
       - ".github/workflows/website.yaml"
       - "docs/**"
@@ -12,6 +14,8 @@ on:
       - "**.md"
       - "!cmd/build/helmify/static/README.md"
   pull_request:
+    branches:
+      - release-[0-9]+.[0-9]+
     paths-ignore:
       - ".github/workflows/website.yaml"
       - "docs/**"
