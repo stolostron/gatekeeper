@@ -1,10 +1,14 @@
 name: dapr-export
 on:
   push:
+    branches:
+      - release-[0-9]+.[0-9]+
     paths:
       - "pkg/export/dapr"
       - "test/export/**"
   pull_request:
+    branches:
+      - release-[0-9]+.[0-9]+
     paths:
       - "pkg/export/dapr"
       - "test/export/**"
