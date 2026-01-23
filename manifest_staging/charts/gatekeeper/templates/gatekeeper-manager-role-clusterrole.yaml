@@ -67,17 +67,6 @@ rules:
   - config.gatekeeper.sh
   resources:
   - '*'
-  verbs:
-  - create
-  - delete
-  - get
-  - list
-  - patch
-  - update
-  - watch
-- apiGroups:
-  - config.gatekeeper.sh
-  resources:
   - configs
   verbs:
   - create
@@ -97,30 +86,10 @@ rules:
   - update
 - apiGroups:
   - connection.gatekeeper.sh
-  resources:
-  - '*'
-  verbs:
-  - create
-  - delete
-  - get
-  - list
-  - patch
-  - update
-  - watch
-- apiGroups:
   - constraints.gatekeeper.sh
-  resources:
-  - '*'
-  verbs:
-  - create
-  - delete
-  - get
-  - list
-  - patch
-  - update
-  - watch
-- apiGroups:
   - expansion.gatekeeper.sh
+  - mutations.gatekeeper.sh
+  - status.gatekeeper.sh
   resources:
   - '*'
   verbs:
@@ -143,18 +112,6 @@ rules:
   - patch
   - update
   - watch
-- apiGroups:
-  - mutations.gatekeeper.sh
-  resources:
-  - '*'
-  verbs:
-  - create
-  - delete
-  - get
-  - list
-  - patch
-  - update
-  - watch
 {{- if and .Values.psp.enabled (.Capabilities.APIVersions.Has "policy/v1beta1/PodSecurityPolicy") }}
 - apiGroups:
   - policy
@@ -165,18 +122,6 @@ rules:
   verbs:
   - use
 {{- end }}
-- apiGroups:
-  - status.gatekeeper.sh
-  resources:
-  - '*'
-  verbs:
-  - create
-  - delete
-  - get
-  - list
-  - patch
-  - update
-  - watch
 - apiGroups:
   - templates.gatekeeper.sh
   resources:
