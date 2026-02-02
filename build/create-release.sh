@@ -266,8 +266,8 @@ get_latest_stolostron_release() {
         error "No release branches found in stolostron repository"
     fi
 
-    # Get the latest release branch
-    PREV_RELEASE=$(echo "${release_branches}" | tail -1)
+    # Get the latest release branch, excluding the new release version
+    PREV_RELEASE=$(echo "${release_branches}" | grep -v "${NEW_RELEASE_VERSION%.*}" | tail -1)
 
     log "Latest stolostron release branch: release-${PREV_RELEASE}"
 }
@@ -338,7 +338,18 @@ phase1_create_release_branch() {
 phase2_create_patch_branch() {
     log "=== Phase 2: Create and rebase patch branch with customizations ==="
 
-    confirm "This will create a patch branch and rebase stolostron customizations onto the new release."
+    confirm "This will create a new patch-release-${NEW_RELEASE} branch and rebase stolostron customizations onto the new release."
+
+    # Delete existing patch branch if it exists
+    if [[ -n "$(git branch --list patch-release-${NEW_RELEASE})" ]]; then
+        echo -e "${YELLOW}Patch branch patch-release-${NEW_RELEASE} already exists.${NC}"
+        read -p "Delete it? [y to delete, N to continue] " -n 1 -r
+        if [[ ${REPLY} =~ ^[Yy]$ ]]; then
+            execute "git branch -D patch-release-${NEW_RELEASE} 2>/dev/null || true"
+        else
+            log "Not deleting patch branch patch-release-${NEW_RELEASE}"
+        fi
+    fi
 
     # Fetch previous release branch
     execute "git fetch ${STOLOSTRON} release-${PREV_RELEASE}"
@@ -357,17 +368,23 @@ phase2_create_patch_branch() {
     # Update manager.yaml
     if [[ -f "config/manager/manager.yaml" ]]; then
         execute "${SED} -i \"s%\\(image: \\)openpolicyagent/gatekeeper:%\\1quay.io/gatekeeper/gatekeeper:%\" config/manager/manager.yaml"
+    else
+        error "config/manager/manager.yaml not found"
     fi
 
     # Update gatekeeper.yaml
     if [[ -f "manifest_staging/deploy/gatekeeper.yaml" ]]; then
         execute "${SED} -i \"s%\\(image: \\)openpolicyagent/gatekeeper:%\\1quay.io/gatekeeper/gatekeeper:%\" manifest_staging/deploy/gatekeeper.yaml"
+    else
+        error "manifest_staging/deploy/gatekeeper.yaml not found"
     fi
 
     # Update Dockerfile.rhtap
     if [[ -f "build/Dockerfile.rhtap" ]]; then
         execute "${SED} -i \"s%version.Version=v[^\\\"\\]\\+%version.Version=v${NEW_RELEASE_VERSION}%\" build/Dockerfile.rhtap"
         execute "${SED} -i 's/^\(LABEL version=\).*/\1v${NEW_RELEASE_VERSION}/' build/Dockerfile.rhtap"
+    else
+        error "build/Dockerfile.rhtap not found"
     fi
 
     # Add all changes and commit
