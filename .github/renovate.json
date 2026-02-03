@@ -1,6 +1,9 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": ["schedule:earlyMondays"],
+  "extends": [
+    "config:recommended",
+    "schedule:earlyMondays"
+  ],
   "helm-values": {
     "enabled": false
   },
@@ -31,7 +34,7 @@
   "osvVulnerabilityAlerts": true,
   "packageRules": [
     {
-      "groupName": "containerfile images [{{{baseBranch}}}]",
+      "groupName": "containerfile images",
       "matchManagers": ["dockerfile"]
     },
     {
