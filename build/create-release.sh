@@ -372,24 +372,21 @@ phase2_create_patch_branch() {
         error "config/manager/manager.yaml not found"
     fi
 
-    # Update gatekeeper.yaml
-    if [[ -f "manifest_staging/deploy/gatekeeper.yaml" ]]; then
-        execute "${SED} -i \"s%\\(image: \\)openpolicyagent/gatekeeper:%\\1quay.io/gatekeeper/gatekeeper:%\" manifest_staging/deploy/gatekeeper.yaml"
-    else
-        error "manifest_staging/deploy/gatekeeper.yaml not found"
-    fi
-
     # Update Dockerfile.rhtap
     if [[ -f "build/Dockerfile.rhtap" ]]; then
+        execute "git checkout ${STOLOSTRON}/release-${PREV_RELEASE} -- build/Dockerfile.rhtap"
         execute "${SED} -i \"s%version.Version=v[^\\\"\\]\\+%version.Version=v${NEW_RELEASE_VERSION}%\" build/Dockerfile.rhtap"
         execute "${SED} -i 's/^\(LABEL version=\).*/\1v${NEW_RELEASE_VERSION}/' build/Dockerfile.rhtap"
     else
         error "build/Dockerfile.rhtap not found"
     fi
 
+    # Regenerate manifests
+    execute "make -f Makefile.stolostron manifests"
+
     # Add all changes and commit
     execute "git add ."
-    execute "git commit -m \"!!!squash!!! stolostron updates\" -m \"Update manager.yaml, gatekeeper.yaml, and Dockerfile.rhtap to ${NEW_RELEASE_VERSION}\""
+    execute "git commit -m \"!!!squash!!! stolostron updates\" -m \"Update manager.yaml and Dockerfile.rhtap to ${NEW_RELEASE_VERSION}\""
 
     success "Phase 2 completed: Created patch-release-${NEW_RELEASE} branch with customizations"
 
