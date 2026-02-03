@@ -1,0 +1,52 @@
+include Makefile
+
+PWD := $(shell pwd)
+LOCAL_BIN ?= $(PWD)/.tmp/bin
+export PATH := $(LOCAL_BIN):$(PATH)
+
+CONVERSION_GEN_CMD := $(shell grep "conversion-gen@" build/tooling/Dockerfile | sed 's/^RUN //')
+CONVERSION_GEN := $(LOCAL_BIN)/conversion-gen
+
+CONTROLLER_GEN_CMD := $(shell grep "controller-gen@" build/tooling/Dockerfile | sed 's/^RUN //')
+CONTROLLER_GEN := $(LOCAL_BIN)/controller-gen
+
+$(LOCAL_BIN):
+	mkdir -p $(LOCAL_BIN)
+
+KUSTOMIZE = $(LOCAL_BIN)/kustomize
+$(KUSTOMIZE):
+	# Install kustomize $(KUSTOMIZE_VERSION) for $(ARCH)
+	git clone --branch kustomize/v$(KUSTOMIZE_VERSION) --depth 1 https://github.com/kubernetes-sigs/kustomize.git
+	cd kustomize/kustomize && GOBIN=$(LOCAL_BIN) go install ./...
+	rm -rf kustomize
+
+.PHONY: __tooling-image
+__tooling-image:
+	# Skipping tooling image build
+
+.PHONY: __conversion-gen
+__conversion-gen:
+	GOBIN=$(LOCAL_BIN) $(CONVERSION_GEN_CMD)
+
+.PHONY: __controller-gen
+__controller-gen:
+	GOBIN=$(LOCAL_BIN) $(CONTROLLER_GEN_CMD)
+
+.PHONY: generate
+generate:
+
+.PHONY: manifests
+manifests: $(KUSTOMIZE)
+	$(CONTROLLER_GEN) \
+		crd \
+		rbac:roleName=manager-role \
+		webhook \
+		paths="./apis/..." \
+		paths="./pkg/..." \
+		output:crd:artifacts:config=config/crd/bases
+	./build/update-match-schema.sh
+	rm -rf manifest_staging
+	mkdir -p manifest_staging/deploy
+	mkdir -p manifest_staging/charts/gatekeeper
+	$(KUSTOMIZE) build config/default -o manifest_staging/deploy/gatekeeper.yaml
+	$(KUSTOMIZE) build --load_restrictor LoadRestrictionsNone cmd/build/helmify | go run cmd/build/helmify/*.go
