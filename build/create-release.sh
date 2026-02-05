@@ -368,6 +368,7 @@ phase2_create_patch_branch() {
     # Update manager.yaml
     if [[ -f "config/manager/manager.yaml" ]]; then
         execute "${SED} -i \"s%\\(image: \\)openpolicyagent/gatekeeper:%\\1quay.io/gatekeeper/gatekeeper:%\" config/manager/manager.yaml"
+        execute "${SED} -i \"s%\\(imagePullPolicy: \\)Always%\\1IfNotPresent%g\" config/manager/manager.yaml"
     else
         error "config/manager/manager.yaml not found"
     fi
