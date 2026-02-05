@@ -1,5 +1,5 @@
 FROM brew.registry.redhat.io/rh-osbs/openshift-golang-builder:rhel_9_1.25@sha256:8f41beafefbb37e6c260a14cdd0f40c21c59dedb611c8851368243d06da982da AS builder
-ENV LDFLAGS="-X github.com/open-policy-agent/gatekeeper/v3/pkg/version.Version=v3.21.0" \
+ENV LDFLAGS="-X github.com/open-policy-agent/gatekeeper/v3/pkg/version.Version=v3.21.1" \
     GO111MODULE=on \
     CGO_ENABLED=1
 
@@ -34,7 +34,7 @@ ENTRYPOINT ["/manager"]
 LABEL name="gatekeeper/gatekeeper-rhel9"
 LABEL summary="Open Policy Agent Gatekeeper"
 LABEL description="An admission policy controller integrating OPA to help enforce policies and strengthen governance"
-LABEL version=v3.21.0
+LABEL version=v3.21.1
 LABEL maintainer="acm-component-maintainers@redhat.com"
 LABEL com.redhat.component="gatekeeper-container"
 LABEL io.openshift.tags="data,images"
