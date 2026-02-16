@@ -558,11 +558,12 @@ $(LOCALBIN):
 	mkdir -p $(LOCALBIN)
 
 ENVTEST ?= $(LOCALBIN)/setup-envtest
+ENVTEST_VERSION ?= release-0.20
 
 .PHONY: envtest
 envtest: $(ENVTEST) ## Download envtest-setup locally if necessary.
 $(ENVTEST): $(LOCALBIN)
-	test -s $(LOCALBIN)/setup-envtest || GOBIN=$(LOCALBIN) go install sigs.k8s.io/controller-runtime/tools/setup-envtest@v0.0.0-20230118154835-9241bceb3098
+	test -s $(LOCALBIN)/setup-envtest || GOBIN=$(LOCALBIN) go install sigs.k8s.io/controller-runtime/tools/setup-envtest@$(ENVTEST_VERSION)
 
 .PHONY: vendor
 vendor:
