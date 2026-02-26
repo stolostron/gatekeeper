@@ -378,6 +378,7 @@ phase2_create_patch_branch() {
         execute "git checkout ${STOLOSTRON}/release-${PREV_RELEASE} -- build/Dockerfile.rhtap"
         execute "${SED} -i \"s%version.Version=v[^\\\"\\]\\+%version.Version=v${NEW_RELEASE_VERSION}%\" build/Dockerfile.rhtap"
         execute "${SED} -i 's/^\(LABEL version=\).*/\1v${NEW_RELEASE_VERSION}/' build/Dockerfile.rhtap"
+        execute "${SED} -i 's/^\(LABEL cpe=\).*/\1cpe:/a:redhat:gatekeeper:${NEW_RELEASE}::el9/' build/Dockerfile.rhtap"
     else
         error "build/Dockerfile.rhtap not found"
     fi
