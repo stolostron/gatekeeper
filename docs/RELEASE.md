@@ -81,8 +81,7 @@ Before creating a release pull request, ensure the following steps are completed
    - Reference the relevant repositories and check for new releases.
 
 3. **Vulnerability Scanning**
-   - Ensure [Trivy](https://github.com/aquasecurity/trivy) scans are passing and no vulnerabilities are detected in the latest CI run.
-   - Review the [latest Trivy scan results](https://github.com/open-policy-agent/gatekeeper/actions/workflows/scan-vulns.yaml?query=branch%3Amaster) before proceeding.
+   - Review the [latest vulnerability scan results](https://github.com/open-policy-agent/gatekeeper/actions/workflows/scan-vulns.yaml?query=branch%3Amaster) before proceeding.
 
 ## Building and releasing
 
