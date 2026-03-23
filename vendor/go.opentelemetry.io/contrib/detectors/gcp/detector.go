@@ -1,29 +1,18 @@
 // Copyright The OpenTelemetry Authors
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//     http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+// SPDX-License-Identifier: Apache-2.0
 
 package gcp // import "go.opentelemetry.io/contrib/detectors/gcp"
 
 import (
 	"context"
 	"fmt"
+	"strconv"
 
 	"cloud.google.com/go/compute/metadata"
 	"github.com/GoogleCloudPlatform/opentelemetry-operations-go/detectors/gcp"
-
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/sdk/resource"
-	semconv "go.opentelemetry.io/otel/semconv/v1.21.0"
+	semconv "go.opentelemetry.io/otel/semconv/v1.37.0"
 )
 
 // NewDetector returns a resource detector which detects resource attributes on:
@@ -42,7 +31,7 @@ type detector struct {
 
 // Detect detects associated resources when running on GCE, GKE, GAE,
 // Cloud Run, and Cloud functions.
-func (d *detector) Detect(ctx context.Context) (*resource.Resource, error) {
+func (d *detector) Detect(context.Context) (*resource.Resource, error) {
 	if !metadata.OnGCE() {
 		return nil, nil
 	}
@@ -61,6 +50,13 @@ func (d *detector) Detect(ctx context.Context) (*resource.Resource, error) {
 		b.add(semconv.FaaSNameKey, d.detector.FaaSName)
 		b.add(semconv.FaaSVersionKey, d.detector.FaaSVersion)
 		b.add(semconv.FaaSInstanceKey, d.detector.FaaSID)
+		b.add(semconv.CloudRegionKey, d.detector.FaaSCloudRegion)
+	case gcp.CloudRunJob:
+		b.attrs = append(b.attrs, semconv.CloudPlatformGCPCloudRun)
+		b.add(semconv.FaaSNameKey, d.detector.FaaSName)
+		b.add(semconv.FaaSInstanceKey, d.detector.FaaSID)
+		b.add(semconv.GCPCloudRunJobExecutionKey, d.detector.CloudRunJobExecution)
+		b.addInt(semconv.GCPCloudRunJobTaskIndexKey, d.detector.CloudRunJobTaskIndex)
 		b.add(semconv.CloudRegionKey, d.detector.FaaSCloudRegion)
 	case gcp.CloudFunctions:
 		b.attrs = append(b.attrs, semconv.CloudPlatformGCPCloudFunctions)
@@ -87,8 +83,8 @@ func (d *detector) Detect(ctx context.Context) (*resource.Resource, error) {
 		b.add(semconv.HostTypeKey, d.detector.GCEHostType)
 		b.add(semconv.HostIDKey, d.detector.GCEHostID)
 		b.add(semconv.HostNameKey, d.detector.GCEHostName)
-		b.add(semconv.GCPGceInstanceNameKey, d.detector.GCEInstanceName)
-		b.add(semconv.GCPGceInstanceHostnameKey, d.detector.GCEInstanceHostname)
+		b.add(semconv.GCPGCEInstanceNameKey, d.detector.GCEInstanceName)
+		b.add(semconv.GCPGCEInstanceHostnameKey, d.detector.GCEInstanceHostname)
 	default:
 		// We don't support this platform yet, so just return with what we have
 	}
@@ -110,11 +106,26 @@ func (r *resourceBuilder) add(key attribute.Key, detect func() (string, error)) 
 	}
 }
 
+func (r *resourceBuilder) addInt(key attribute.Key, detect func() (string, error)) {
+	if v, err := detect(); err == nil {
+		if vi, err := strconv.Atoi(v); err == nil {
+			r.attrs = append(r.attrs, key.Int(vi))
+		} else {
+			r.errs = append(r.errs, err)
+		}
+	} else {
+		r.errs = append(r.errs, err)
+	}
+}
+
 // zoneAndRegion functions are expected to return zone, region, err.
 func (r *resourceBuilder) addZoneAndRegion(detect func() (string, string, error)) {
 	if zone, region, err := detect(); err == nil {
-		r.attrs = append(r.attrs, semconv.CloudAvailabilityZone(zone))
-		r.attrs = append(r.attrs, semconv.CloudRegion(region))
+		r.attrs = append(
+			r.attrs,
+			semconv.CloudAvailabilityZone(zone),
+			semconv.CloudRegion(region),
+		)
 	} else {
 		r.errs = append(r.errs, err)
 	}
