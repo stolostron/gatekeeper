@@ -110,7 +110,7 @@ jobs:
             - [ ] **Constraint Framework**: Updated to latest commit from [frameworks releases](https://github.com/open-policy-agent/frameworks/)
 
             ### Security Check
-            - [ ] **Trivy Scan**: [Latest vulnerability scan](https://github.com/open-policy-agent/gatekeeper/actions/workflows/scan-vulns.yaml?query=branch%3Amaster) passes with no detected vulnerabilities
+            - [ ] **Vulnerability Scan**: [Latest vulnerability scan](https://github.com/open-policy-agent/gatekeeper/actions/workflows/scan-vulns.yaml?query=branch%3Amaster) passes with no detected vulnerabilities
 
             ---
 
