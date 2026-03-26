@@ -365,3 +365,6 @@ test/externaldata/dummy-provider/certs/
 
 # annotations for dapr
 annotations.yaml
+
+# stolostron ignores
+website/
