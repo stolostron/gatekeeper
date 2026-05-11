@@ -34,16 +34,20 @@
   "osvVulnerabilityAlerts": true,
   "packageRules": [
     {
-      "groupName": "containerfile images",
-      "matchManagers": ["dockerfile"]
-    },
-    {
       "matchManagers": ["gomod"],
       "enabled": false,
       "vulnerabilityAlerts": {
         "enabled": true
       },
       "osvVulnerabilityAlerts": true
+    },
+    {
+      "groupName": "Containerfile images",
+      "matchManagers": ["dockerfile"]
+    },
+    {
+      "matchManagers": ["github-actions"],
+      "groupName": "GitHub actions"
     }
   ],
   "timezone": "America/New_York"
