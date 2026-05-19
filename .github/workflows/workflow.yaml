@@ -32,7 +32,7 @@ permissions: read-all
 jobs:
   build_test:
     name: "Build and Test"
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     timeout-minutes: 20
     strategy:
       fail-fast: false
@@ -45,7 +45,7 @@ jobs:
           egress-policy: audit
 
       - name: Check out code into the Go module directory
-        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
       - name: Set up Go
         uses: actions/setup-go@44694675825211faa026b3c33043df3e48a5fa00 # v6.0.0
@@ -85,7 +85,7 @@ jobs:
           kubectl logs -n gatekeeper-system -l control-plane=audit-controller --tail=-1 > logs-audit.json
 
       - name: Upload artifacts
-        uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5.0.0
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         if: ${{ always() }}
         with:
           name: logs-${{ matrix.KUBERNETES_VERSION }}
@@ -94,7 +94,7 @@ jobs:
 
   helm_build_test:
     name: "[Helm] Build and Test"
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     timeout-minutes: 30
     strategy:
       fail-fast: false
@@ -108,7 +108,7 @@ jobs:
           egress-policy: audit
 
       - name: Check out code into the Go module directory
-        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
       - name: Bootstrap e2e
         run: |
@@ -157,7 +157,7 @@ jobs:
           kubectl logs -n ${{ matrix.GATEKEEPER_NAMESPACE }} -l run=dummy-provider --tail=-1 > logs-helm-${{ matrix.HELM_VERSION }}-${{ matrix.GATEKEEPER_NAMESPACE }}-dummy-provider.json
 
       - name: Upload artifacts
-        uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5.0.0
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         if: ${{ always() }}
         with:
           name: helm-logs-${{ matrix.HELM_VERSION }}-${{ matrix.GATEKEEPER_NAMESPACE }}
@@ -166,7 +166,7 @@ jobs:
 
   build_test_generator_expansion:
     name: "[Generator Resource Expansion] Build and Test"
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     timeout-minutes: 20
 
     steps:
@@ -176,7 +176,7 @@ jobs:
         egress-policy: audit
 
     - name: Check out code into the Go module directory
-      uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+      uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
     - name: Set up Go
       uses: actions/setup-go@44694675825211faa026b3c33043df3e48a5fa00 # v6.0.0
@@ -214,7 +214,7 @@ jobs:
         kubectl logs -n gatekeeper-system -l control-plane=audit-controller --tail=-1 > logs-generatorexpansion-audit.json
 
     - name: Upload artifacts
-      uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5.0.0
+      uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
       if: ${{ always() }}
       with:
         name: generatorexpansion-logs
@@ -223,7 +223,7 @@ jobs:
 
   e2e_test_with_OwnerReferencesPermissionEnforcement_admission_plugin:
     name: "[E2E] Test with OwnerReferencesPermissionEnforcement admission plugin"
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     timeout-minutes: 15
     steps:
       - name: Harden Runner
@@ -232,7 +232,7 @@ jobs:
           egress-policy: audit
 
       - name: Check out code into the Go module directory
-        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
       - name: Set up Go
         uses: actions/setup-go@44694675825211faa026b3c33043df3e48a5fa00 # v6.0.0
@@ -272,7 +272,7 @@ jobs:
           kubectl logs -n gatekeeper-system -l control-plane=audit-controller --tail=-1 > logs-audit.json
 
       - name: Upload artifacts
-        uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5.0.0
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         if: ${{ always() }}
         with:
           name: logs-${{ matrix.KUBERNETES_VERSION }}
