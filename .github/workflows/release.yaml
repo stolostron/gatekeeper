@@ -14,7 +14,7 @@ permissions: read-all
 jobs:
   tagged-release:
     name: "Tagged Release"
-    runs-on: "ubuntu-22.04"
+    runs-on: "ubuntu-24.04"
     permissions:
       contents: write
       packages: write
@@ -39,7 +39,7 @@ jobs:
         uses: actions/checkout@900f2210b1d28bbbd0bd22d17926b9e224e8f231
 
       - name: Set up Go
-        uses: actions/setup-go@40f1582b2485089dde7abd97c1529aa768e1baff # v5.6.0
+        uses: actions/setup-go@924ae3a1cded613372ab5595356fb5720e22ba16 # v6.5.0
         with:
           go-version: "1.26"
           check-latest: true
@@ -50,7 +50,7 @@ jobs:
           echo "TAG=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
 
       - name: Login to GitHub Container Registry
-        uses: docker/login-action@c94ce9fb468520275223c153574b00df6fe4bcc9 # v3.7.0
+        uses: docker/login-action@af1e73f918a031802d376d3c8bbc3fe56130a9b0 # v4.4.0
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
