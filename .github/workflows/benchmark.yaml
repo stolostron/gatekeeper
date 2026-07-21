@@ -10,7 +10,7 @@ jobs:
   benchmark:
     name: "Benchmark"
     if: github.event.issue.pull_request && github.event.comment.body == '/benchmark'
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     timeout-minutes: 60
     permissions:
       contents: write
@@ -28,14 +28,14 @@ jobs:
           issue_number: ${{ github.event.issue.number }}
 
       - name: Update status
-        uses: peter-evans/create-or-update-comment@71345be0265236311c031f5c7866368bd1eff043 # v4.0.0
+        uses: peter-evans/create-or-update-comment@e8674b075228eee787fea43ef493e45ece1004c9 # v5.0.0
         with:
           issue-number: ${{ github.event.issue.number }}
           body: |
             [Running benchmark here...](${{ github.server.url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})
 
       - name: Check out base code into the Go module directory
-        uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # v3.6.0
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         with:
           ref: ${{ github.base_ref }}
 
@@ -43,7 +43,7 @@ jobs:
         run: make benchmark-test BENCHMARK_FILE_NAME="../base_benchmarks.txt"
 
       - name: Check out code into the Go module directory
-        uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # v3.6.0
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
 
       - name: Run benchmark with incoming changes
         run: make benchmark-test BENCHMARK_FILE_NAME="pr_benchmarks.txt"
@@ -61,7 +61,7 @@ jobs:
           echo '$delimiter' >> $GITHUB_OUTPUT
 
       - name: Create commit comment
-        uses: peter-evans/create-or-update-comment@71345be0265236311c031f5c7866368bd1eff043 # v4.0.0
+        uses: peter-evans/create-or-update-comment@e8674b075228eee787fea43ef493e45ece1004c9 # v5.0.0
         with:
           issue-number: ${{ github.event.issue.number }}
           body: |
