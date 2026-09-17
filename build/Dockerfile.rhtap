@@ -1,4 +1,4 @@
-FROM brew.registry.redhat.io/rh-osbs/openshift-golang-builder:rhel_9_1.26@sha256:c1488dc4364e229cb6963b4e0b088e3e93ef377bf92463d68b7b7e2ab1166f8f AS builder
+FROM registry.redhat.io/openshift/golang-builder:golang-builder-v1.26-rhel9@sha256:7e9c3b1b1d35bfc006b18fc5fdff7e0db0ab3136dbba77c2b7f4bd933c0a3235 AS builder
 ENV LDFLAGS="-X github.com/open-policy-agent/gatekeeper/v3/pkg/version.Version=v3.21.1" \
     GO111MODULE=on \
     CGO_ENABLED=1
