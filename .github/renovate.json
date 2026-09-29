@@ -1,11 +1,10 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": [
-    "config:recommended"
-  ],
-  "schedule": [
-    "* 0-9 1-7,15-21 * 1"
-  ],
+  "extends": ["config:recommended"],
+  "schedule": ["* 0-9 1-7,15-21,29-31 * 1"],
+  "timezone": "America/New_York",
+  "updateNotScheduled": true,
+  "commitMessageSuffix": "({{{baseBranch}}})",
   "helm-values": {
     "enabled": false
   },
@@ -14,12 +13,7 @@
   },
   "dockerfile": {
     "managerFilePatterns": ["build/Dockerfile.rhtap"],
-    "ignorePaths": [
-      "*",
-      "build/tooling/",
-      "test/",
-      "vendor/"
-    ],
+    "includePaths": ["build/Dockerfile.rhtap"],
     "pinDigests": true
   },
   "gomod": {
@@ -31,17 +25,14 @@
     ]
   },
   "vulnerabilityAlerts": {
-    "enabled": true
+    "enabled": true,
+    "commitMessageSuffix": "[SECURITY] ({{{baseBranch}}})"
   },
   "osvVulnerabilityAlerts": true,
   "packageRules": [
     {
       "matchManagers": ["gomod"],
-      "enabled": false,
-      "vulnerabilityAlerts": {
-        "enabled": true
-      },
-      "osvVulnerabilityAlerts": true
+      "enabled": false
     },
     {
       "groupName": "Containerfile images",
@@ -51,6 +42,5 @@
       "matchManagers": ["github-actions"],
       "groupName": "GitHub actions"
     }
-  ],
-  "timezone": "America/New_York"
+  ]
 }
