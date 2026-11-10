@@ -1,0 +1,42 @@
+FROM registry.redhat.io/openshift/golang-builder:golang-builder-v1.26-rhel9@sha256:cdb2b291b842dc836be849d735d47a80c13a910bdd61a95933167bbaff6b8bc3 AS builder
+ENV LDFLAGS="-X github.com/open-policy-agent/gatekeeper/v3/pkg/version.Version=v3.23.1" \
+    GO111MODULE=on \
+    CGO_ENABLED=1
+
+WORKDIR /go/src/github.com/open-policy-agent/gatekeeper
+
+# Download dependencies before copying source code
+COPY go.mod go.mod
+COPY go.sum go.sum
+RUN go mod download
+
+# Copy the source code
+COPY main.go main.go
+COPY apis/ apis/
+COPY pkg/ pkg/
+
+# Build the controller
+RUN go build -mod=readonly -a -ldflags "${LDFLAGS}" -o manager
+
+# Copy the binary to the UBI-minimal base image
+FROM registry.access.redhat.com/ubi9/ubi-minimal:latest@sha256:6f3a78179e0b30b930a186e7f68a4af52e51bb82406c9653be10bddd624e40f5
+WORKDIR /
+COPY --from=builder /go/src/github.com/open-policy-agent/gatekeeper/manager .
+
+RUN mkdir licenses/
+COPY LICENSE licenses/
+
+USER 65532:65532
+
+ENTRYPOINT ["/manager"]
+
+LABEL name="gatekeeper/gatekeeper-rhel9"
+LABEL summary="Open Policy Agent Gatekeeper"
+LABEL description="An admission policy controller integrating OPA to help enforce policies and strengthen governance"
+LABEL version=v3.23.1
+LABEL maintainer="acm-component-maintainers@redhat.com"
+LABEL com.redhat.component="gatekeeper-container"
+LABEL io.openshift.tags="data,images"
+LABEL io.k8s.display-name="OPA Gatekeeper"
+LABEL io.k8s.description="Open Policy Agent Gatekeeper"
+LABEL cpe="cpe:/a:redhat:gatekeeper:3.23::el9"
