@@ -28,7 +28,7 @@ permissions: read-all
 jobs:
   test:
     name: "Unit test with coverage"
-    runs-on: oracle-vm-4cpu-16gb-x86-64
+    runs-on: ubuntu-22.04
     timeout-minutes: 15
     steps:
       - name: Harden Runner
@@ -54,16 +54,9 @@ jobs:
       - name: Unit test
         run: make native-test
 
-      - name: Codecov Upload
-        uses: codecov/codecov-action@fb8b3582c8e4def4969c97caa2f19720cb33a72f # v7.0.0
-        with:
-          flags: unittests
-          file: ./cover.out
-          fail_ci_if_error: false
-
   race-test:
     name: "Race detector"
-    runs-on: oracle-vm-4cpu-16gb-x86-64
+    runs-on: ubuntu-22.04
     timeout-minutes: 20
     steps:
       - name: Harden Runner
@@ -91,7 +84,7 @@ jobs:
 
   bench-test:
     name: "Benchmarks"
-    runs-on: oracle-vm-4cpu-16gb-x86-64
+    runs-on: ubuntu-22.04
     timeout-minutes: 10
     steps:
       - name: Harden Runner

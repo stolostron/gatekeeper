@@ -10,6 +10,7 @@ permissions: read-all
 
 jobs:
   analyze:
+    if: github.repository == 'open-policy-agent/gatekeeper'
     name: Analyze
     runs-on: oracle-vm-4cpu-16gb-x86-64
     permissions:

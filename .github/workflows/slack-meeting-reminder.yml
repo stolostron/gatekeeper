@@ -15,6 +15,7 @@ permissions: read-all
 
 jobs:
   send-reminder:
+    if: github.repository == 'open-policy-agent/gatekeeper'
     runs-on: oracle-vm-2cpu-8gb-x86-64
     steps:
       - name: Harden Runner

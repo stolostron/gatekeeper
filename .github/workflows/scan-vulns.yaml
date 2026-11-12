@@ -28,7 +28,7 @@ permissions: read-all
 jobs:
   govulncheck:
     name: "Run govulncheck"
-    runs-on: oracle-vm-4cpu-16gb-x86-64
+    runs-on: ubuntu-22.04
     timeout-minutes: 15
     steps:
       - name: Harden Runner
@@ -42,7 +42,8 @@ jobs:
           check-latest: true
       - uses: golang/govulncheck-action@3fa7bd9cee2cfdf3499a8803b226e43de7b7cdb4 # unreleased, includes fix for golang/go#75908
 
-  scan_vulnerabilities:
+  scan_vulnerabilities: # disabled on stolostron - vulnerability scanning is done by Konflux with clair
+    if: github.repository == 'open-policy-agent/gatekeeper'
     name: "[Trivy] Scan for vulnerabilities"
     runs-on: oracle-vm-4cpu-16gb-x86-64
     timeout-minutes: 15
