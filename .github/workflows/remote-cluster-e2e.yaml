@@ -33,7 +33,8 @@ env:
   GATEKEEPER_IMAGE: gatekeeper:remote-e2e
 
 jobs:
-  remote_cluster_e2e:
+  remote_cluster_e2e: # disabled on stolostron - e2e testing separately handled on openshift clusters
+    if: github.repository == 'open-policy-agent/gatekeeper'
     name: "Remote Cluster E2E (Kind) - K8s ${{ matrix.KUBERNETES_VERSION }}"
     runs-on: oracle-vm-8cpu-32gb-x86-64
     timeout-minutes: 30

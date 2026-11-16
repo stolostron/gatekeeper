@@ -10,6 +10,7 @@ permissions:
 
 jobs:
   patch-docs:
+    if: github.repository == 'open-policy-agent/gatekeeper'
     runs-on: oracle-vm-2cpu-8gb-x86-64
     steps:
       - name: Harden Runner
@@ -62,4 +63,3 @@ jobs:
           labels: |
             release-pr
             ${{ github.event.inputs.release_version }}
-      

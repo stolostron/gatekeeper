@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - master
+      - release-3.23
     paths-ignore:
       - ".github/workflows/website.yaml"
       - "docs/**"
@@ -16,6 +17,7 @@ on:
   pull_request:
     branches:
       - master
+      - release-3.23
     paths-ignore:
       - ".github/workflows/website.yaml"
       - "docs/**"
@@ -30,7 +32,7 @@ permissions: read-all
 
 jobs:
   lint:
-    runs-on: oracle-vm-4cpu-16gb-x86-64
+    runs-on: ubuntu-22.04
     steps:
       - name: Harden Runner
         uses: step-security/harden-runner@9af89fc71515a100421586dfdb3dc9c984fbf411 # v2.19.4

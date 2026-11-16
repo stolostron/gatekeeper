@@ -17,6 +17,7 @@ env:
 
 jobs:
   helm_upgrade:
+    if: github.repository == 'open-policy-agent/gatekeeper'
     name: "[Helm] Upgrade test"
     runs-on: oracle-vm-8cpu-32gb-x86-64
     timeout-minutes: 15
