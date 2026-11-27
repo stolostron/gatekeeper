@@ -17,7 +17,6 @@ package main
 
 import (
 	"context"
-	"crypto/tls"
 	"crypto/x509"
 	"errors"
 	"flag"
@@ -67,10 +66,12 @@ import (
 	"github.com/open-policy-agent/gatekeeper/v3/pkg/version"
 	"github.com/open-policy-agent/gatekeeper/v3/pkg/watch"
 	"github.com/open-policy-agent/gatekeeper/v3/pkg/webhook"
+	configv1 "github.com/openshift/api/config/v1"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/types"
+	utilrand "k8s.io/apimachinery/pkg/util/rand"
 	clientgoscheme "k8s.io/client-go/kubernetes/scheme"
 	_ "k8s.io/client-go/plugin/pkg/client/auth/gcp"
 	"k8s.io/client-go/rest"
@@ -140,6 +141,7 @@ func init() {
 	_ = expansionv1alpha1.AddToScheme(scheme)
 	_ = expansionv1beta1.AddToScheme(scheme)
 	_ = connectionv1alpha1.AddToScheme(scheme)
+	_ = configv1.AddToScheme(scheme)
 
 	// +kubebuilder:scaffold:scheme
 	flag.Var(disabledBuiltins, "disable-opa-builtin", "disable opa built-in function, this flag can be declared more than once.")
@@ -242,24 +244,30 @@ func innerMain() int {
 	// Must be called before ctrl.NewManager!
 	metrics.DisableRESTClientMetrics()
 
-	tlsVersion, err := webhook.ParseTLSVersion(*webhook.TLSMinVersion)
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
+	var tlsConfig *rest.Config
+	if len(webhooks) > 0 {
+		tlsConfig = config
+	}
+
+	tlsOpts, watchAPIServer, initialTLSProfile, err := webhook.ResolveTLSConfig(
+		ctx, tlsConfig, scheme, *webhook.TLSMinVersion, *webhook.TLSCipherSuites, *webhook.TLSGroups, *webhook.ClientCAName,
+	)
 	if err != nil {
-		setupLog.Error(err, "unable to parse TLS version")
+		setupLog.Error(err, "unable to resolve TLS configuration")
 		return 1
 	}
+
 	serverOpts := crWebhook.Options{
 		Host:    *host,
 		Port:    *port,
 		CertDir: *certDir,
-		TLSOpts: []func(c *tls.Config){func(c *tls.Config) { c.MinVersion = tlsVersion }},
+		TLSOpts: tlsOpts,
 	}
 	if *webhook.ClientCAName != "" {
 		serverOpts.ClientCAName = *webhook.ClientCAName
-		serverOpts.TLSOpts = []func(*tls.Config){
-			func(cfg *tls.Config) {
-				cfg.VerifyConnection = webhook.GetCertNameVerifier()
-			},
-		}
 	}
 	// create local cluster config once if remote cluster mode is enabled, shared by RoutingCache (reads) and RoutingClient (writes)
 	var localClusterConfig *rest.Config
@@ -287,6 +295,20 @@ func innerMain() int {
 	if err != nil {
 		setupLog.Error(err, "unable to start manager")
 		return 1
+	}
+
+	if len(webhooks) > 0 && watchAPIServer {
+		onTLSProfileChange := func(_, _ configv1.TLSProfileSpec) {
+			setupLog.Info("The APIServer TLS profile changed; shutting down so the pod restarts with the new settings")
+
+			// Stagger replica restarts so the webhook keeps serving while pods cycle.
+			time.Sleep(time.Duration(utilrand.Intn(30)) * time.Second)
+			cancel()
+		}
+
+		if err := webhook.SetupAPIServerTLSWatcher(mgr, initialTLSProfile, onTLSProfileChange); err != nil {
+			setupLog.Info("Unable to watch the APIServer TLS profile; using the resolved TLS settings", "error", err)
+		}
 	}
 
 	// Make sure certs are generated and valid if cert rotation is enabled.
@@ -358,8 +380,6 @@ func innerMain() int {
 	// Setup termination with grace period. Required to give K8s Services time to disconnect the Pod endpoint on termination.
 	// Derived from how the controller-runtime sets up a signal handler with ctrl.SetupSignalHandler()
 	// controller-runtime upstream issue: https://github.com/kubernetes-sigs/controller-runtime/issues/3113
-	ctx, cancel := context.WithCancel(context.Background())
-
 	c := make(chan os.Signal, 2)
 	signal.Notify(c, []os.Signal{os.Interrupt, syscall.SIGTERM}...)
 	go func() {

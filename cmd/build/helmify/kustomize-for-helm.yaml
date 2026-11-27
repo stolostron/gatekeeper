@@ -99,6 +99,8 @@ spec:
             - --disable-cert-rotation={{ .Values.controllerManager.disableCertRotation }}
             - --max-serving-threads={{ .Values.maxServingThreads }}
             - --tls-min-version={{ .Values.controllerManager.tlsMinVersion }}
+            - --tls-cipher-suites={{ .Values.controllerManager.tlsCipherSuites }}
+            - --tls-groups={{ .Values.controllerManager.tlsGroups }}
             - --validating-webhook-configuration-name={{ .Values.validatingWebhookName }}
             - HELMSUBST_ADDITIONAL_VALIDATING_WEBHOOK_CONFIGS_TO_ROTATE_CERTS
             - --mutating-webhook-configuration-name={{ .Values.mutatingWebhookName }}

@@ -41,6 +41,7 @@ YQ_VERSION ?= 4.53.3
 
 HELM_ARGS ?=
 HELM_TIMEOUT ?= 5m
+HELM_TLS_ARGS ?=
 HELM_DAPR_EXPORT_ARGS := --set-string auditPodAnnotations.dapr\\.io/enabled=true \
 	--set-string auditPodAnnotations.dapr\\.io/app-id=audit \
 	--set-string auditPodAnnotations.dapr\\.io/metrics-port=9999 \
@@ -303,11 +304,13 @@ ifeq ($(ENABLE_EXPORT),true)
 		$(HELM_EXPORT_ARGS) \
 		$(if $(filter disk,$(EXPORT_BACKEND)),$(HELM_DISK_EXPORT_ARGS)) \
 		$(if $(filter dapr,$(EXPORT_BACKEND)),$(HELM_DAPR_EXPORT_ARGS)) \
+		$(HELM_TLS_ARGS) \
 		$(HELM_EXTRA_ARGS)
 else
 	./.staging/helm/linux-amd64/helm install manifest_staging/charts/gatekeeper --name-template=gatekeeper \
 		--namespace ${GATEKEEPER_NAMESPACE} --create-namespace \
 		--debug --wait --timeout ${HELM_TIMEOUT} \
+		$(HELM_TLS_ARGS) \
 		$(HELM_EXTRA_ARGS)
 endif
 

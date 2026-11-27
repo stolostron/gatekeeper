@@ -31,3 +31,13 @@ jobs:
       run: |
         helm lint manifest_staging/charts/gatekeeper/
         helm lint cmd/build/helmify/static/
+
+    - name: Verify TLS flags render
+      run: |
+        helm template gatekeeper manifest_staging/charts/gatekeeper \
+          --set controllerManager.tlsMinVersion=1.2 \
+          --set controllerManager.tlsCipherSuites=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256 \
+          --set controllerManager.tlsGroups=secp384r1 > /tmp/rendered.yaml
+        grep -q -- '--tls-min-version=1.2' /tmp/rendered.yaml
+        grep -q -- '--tls-cipher-suites=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256' /tmp/rendered.yaml
+        grep -q -- '--tls-groups=secp384r1' /tmp/rendered.yaml

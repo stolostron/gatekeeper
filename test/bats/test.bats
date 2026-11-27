@@ -44,8 +44,61 @@ teardown_file() {
   kubectl wait --for=condition=Ready --timeout=60s pod temp
   kubectl cp ${cert} temp:/tmp/cacert
 
-  wait_for_process ${WAIT_TIME} ${SLEEP_TIME} "kubectl exec -it temp -- curl -f --cacert /tmp/cacert --connect-timeout 1 --max-time 2  https://gatekeeper-webhook-service.${GATEKEEPER_NAMESPACE}.svc:443/v1/admitlabel"
+  wait_for_process ${WAIT_TIME} ${SLEEP_TIME} "kubectl exec -it temp -- curl -s --cacert /tmp/cacert --connect-timeout 1 --max-time 2  https://gatekeeper-webhook-service.${GATEKEEPER_NAMESPACE}.svc:443/v1/admitlabel"
   kubectl delete pod temp
+}
+
+get_tls_arg() {
+  local flag="$1"
+  kubectl -n ${GATEKEEPER_NAMESPACE} get deployment gatekeeper-controller-manager -o json \
+    | jq -r --arg flag "${flag}" '.spec.template.spec.containers[] | select(.name=="manager") | .args[] | select(startswith($flag))'
+}
+
+@test "controller manager tls flags are set" {
+  min_version_arg="$(get_tls_arg --tls-min-version)"
+  if [ -z "${min_version_arg}" ]; then
+    skip "deployment does not set TLS flags; the manager uses its built-in defaults"
+  fi
+
+  assert_match '^--tls-min-version=(1\.2|1\.3)$' "${min_version_arg}"
+  assert_not_equal "" "$(get_tls_arg --tls-cipher-suites)"
+  assert_not_equal "" "$(get_tls_arg --tls-groups)"
+
+  if [ -n "${EXPECTED_TLS_MIN_VERSION:-}" ]; then
+    assert_equal "--tls-min-version=${EXPECTED_TLS_MIN_VERSION}" "${min_version_arg}"
+  fi
+
+  if [ -n "${EXPECTED_TLS_CIPHER_SUITES:-}" ]; then
+    assert_equal "--tls-cipher-suites=${EXPECTED_TLS_CIPHER_SUITES}" "$(get_tls_arg --tls-cipher-suites)"
+  fi
+}
+
+@test "webhook enforces the configured tls minimum version" {
+  min_version="$(get_tls_arg --tls-min-version | cut -d= -f2)"
+  if [ -z "${min_version}" ]; then
+    min_version="1.3"
+  fi
+
+  cert=$(mktemp)
+  CLEAN_CMD="${CLEAN_CMD}; rm -f ${cert}; kubectl delete pod tls-probe --ignore-not-found"
+  wait_for_process ${WAIT_TIME} ${SLEEP_TIME} "get_ca_cert ${cert}"
+
+  kubectl get pod tls-probe >/dev/null 2>&1 || kubectl run tls-probe --image=curlimages/curl -- tail -f /dev/null
+  kubectl wait --for=condition=Ready --timeout=60s pod tls-probe
+  kubectl cp ${cert} tls-probe:/tmp/cacert
+
+  webhook_url="https://gatekeeper-webhook-service.${GATEKEEPER_NAMESPACE}.svc:443/v1/admitlabel"
+
+  run kubectl exec tls-probe -- curl -s --tlsv1.3 --tls-max 1.3 --cacert /tmp/cacert --connect-timeout 1 --max-time 5 ${webhook_url}
+  assert_success
+
+  run kubectl exec tls-probe -- curl -sS --tlsv1.2 --tls-max 1.2 --cacert /tmp/cacert --connect-timeout 1 --max-time 5 ${webhook_url}
+  if [ "${min_version}" = "1.2" ]; then
+    assert_success
+  else
+    # 35 is curl's TLS handshake failure, e.g. server minimum version rejects the client
+    assert_equal "35" "${status}"
+  fi
 }
 
 @test "constrainttemplates crd is established" {

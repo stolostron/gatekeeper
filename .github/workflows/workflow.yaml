@@ -139,11 +139,14 @@ jobs:
             GENERATE_VAP=true \
             GENERATE_VAPBINDING=true \
             SYNC_VAP_ENFORCEMENT_SCOPE=true \
-            LOG_LEVEL=DEBUG
+            LOG_LEVEL=DEBUG \
+            HELM_TLS_ARGS='--set controllerManager.tlsMinVersion=1.2 --set controllerManager.tlsCipherSuites=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256'
 
           make test-e2e \
             GATEKEEPER_NAMESPACE=${{ matrix.GATEKEEPER_NAMESPACE }} \
-            ENABLE_VAP_TESTS=1
+            ENABLE_VAP_TESTS=1 \
+            EXPECTED_TLS_MIN_VERSION=1.2 \
+            EXPECTED_TLS_CIPHER_SUITES=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
 
       - name: Save logs
         if: ${{ always() }}

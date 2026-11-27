@@ -91,6 +91,8 @@ spec:
           }}
         - --max-serving-threads={{ .Values.maxServingThreads }}
         - --tls-min-version={{ .Values.controllerManager.tlsMinVersion }}
+        - --tls-cipher-suites={{ .Values.controllerManager.tlsCipherSuites }}
+        - --tls-groups={{ .Values.controllerManager.tlsGroups }}
         - --validating-webhook-configuration-name={{ .Values.validatingWebhookName
           }}
         {{ if .Values.additionalValidatingWebhookConfigsToRotateCerts | empty | not }}- --additional-validating-webhook-configs-to-rotate-certs={{ .Values.additionalValidatingWebhookConfigsToRotateCerts | join "," }}{{- end }}
